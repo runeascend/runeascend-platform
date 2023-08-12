@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "runespreader"
+version = "0.1.0"
+description = ""
+authors = ["Charles Warren <ciwarren@mtu.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.0.3"
+clickhouse-driver = "^0.2.6"
+pyyaml = "^6.0.1"
+jupyter = "^1.0.0"
+plotly = "^5.15.0"
+typer = "^0.9.0"
+discord = "^2.3.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
