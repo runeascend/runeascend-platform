@@ -14,6 +14,13 @@ config = yaml.load(open("/home/charles/.config/runespreader"), Loader=yaml.Loade
 profit_threshold = config.get("POTENTIAL_PROFIT")
 discord_url = config.get("BOT_WEBHOOK")
 
+def embed_field(name, value):
+    return {
+        "name": name,
+        "value": value,
+        "inline": True
+    }
+
 
 def refresh_vol_list():
     r = Runespreader()
@@ -92,7 +99,7 @@ while True:
                 ]
                 h1_low = symbol_low_df_1h["low"].mean()
                 h1_high = symbol_high_df_1h["high"].mean()
-                content = f"""
+                """
                 ```
                     {symbol}
                     last_sell: {int(last_sell["low"])} @ {last_sell["low_time"]}
@@ -108,7 +115,47 @@ while True:
                     potential_profit: {potential_profit}
                 ```
                 """
-                requests.post(discord_url, json={"content": content})
+
+                fields = []
+
+                fields.append(embed_field(
+                    "Last sell",
+                    f'{int(last_sell["low"])} <t:{last_sell["low_time"].to_timestamp()}:R>',
+                ))
+                fields.append(embed_field(
+                    "Last buy",
+                    f'{int(last_buy["high"])} <t:{last_buy["high_time"].to_timestamp()}:R>',
+                ))
+
+                fields.append(embed_field("15m sell avg", str(m15_low)))
+                fields.append(embed_field("15m buy avg", str(m15_high)))
+                fields.append(embed_field("30m sell avg", str(m30_low)))
+                fields.append(embed_field("30m buy avg", str(m30_high)))
+                fields.append(embed_field("1h sell avg", str(h1_low)))
+                fields.append(embed_field("1h buy avg", str(h1_high)))
+                fields.append(embed_field("Limit", str(limit)))
+                fields.append(embed_field("Profit per item", str(profit_per_item)))
+                fields.append(embed_field("Potential profit", str(potential_profit)))
+                
+                embed = {}
+                embed["title"] = symbol
+                embed["fields"] = fields
+
+                if profit_per_item < 25:
+                    embed["color"] = 0xe81515
+                elif profit_per_item < 100:
+                    embed["color"] = 0xe8b915
+                else:
+                    embed["color"] = 0x1ae815
+
+                requests.post(discord_url, json={
+                    "embeds": [embed],
+                    # "components": [
+                    #     {
+                    #         "type"
+                    #     }
+                    # ]
+                })
                 # print(content)
                 deal_dict[symbol] = time.time()
     print(deal_dict)
