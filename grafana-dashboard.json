@@ -1,0 +1,442 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "panels": [],
+      "repeat": "Items",
+      "repeatDirection": "h",
+      "title": "Market Dynamics of $Items",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "database": "default",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+          },
+          "dateColDataType": "",
+          "dateLoading": false,
+          "dateTimeColDataType": "highTime",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries as t,\n    name,\n    avg(high)\nFROM $table\n\nWHERE $timeFilter and name in ($Items)\n\nGROUP BY t, name\n\nORDER BY t\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(highTime), 1) * 1) * 1000 as t,\n    name,\n    avg(high)\nFROM default.rs_live_prices\n\nWHERE highTime >= toDateTime(1691801915) AND highTime <= toDateTime(1691802215) and name in ('Dragon bones')\n\nGROUP BY t, name\n\nORDER BY t",
+          "refId": "A",
+          "round": "0s",
+          "skip_comments": true,
+          "table": "rs_live_prices",
+          "tableLoading": false
+        },
+        {
+          "database": "default",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+          },
+          "dateColDataType": "",
+          "dateLoading": false,
+          "dateTimeColDataType": "lowTime",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    $timeSeries as t,\n    name,\n    avg(low)\nFROM $table\n\nWHERE $timeFilter and name in ($Items)\n\nGROUP BY t, name\n\nORDER BY t\n",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(lowTime), 1) * 1) * 1000 as t,\n    name,\n    avg(low)\nFROM default.rs_live_prices\n\nWHERE lowTime >= toDateTime(1691801915) AND lowTime <= toDateTime(1691802215) and name in ('Dragon bones')\n\nGROUP BY t, name\n\nORDER BY t",
+          "refId": "B",
+          "round": "0s",
+          "skip_comments": true,
+          "table": "rs_live_prices",
+          "tableLoading": false
+        }
+      ],
+      "title": "Bid and Ask Spread of $Items",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.0.3",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "database": "default",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+          },
+          "dateColDataType": "",
+          "dateLoading": false,
+          "dateTimeColDataType": "highTime",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    lowTime,\n    low\nFROM $table\n\nWHERE name = $Items\n\nORDER BY lowTime DESC\n\nLIMIT 1 \n",
+          "rawQuery": "SELECT\n    lowTime,\n    low\nFROM default.rs_live_prices\n\nWHERE name = 'Dragon arrow'\n\nORDER BY lowTime DESC\n\nLIMIT 1",
+          "refId": "A",
+          "round": "0s",
+          "skip_comments": true,
+          "table": "rs_live_prices",
+          "tableLoading": false
+        }
+      ],
+      "title": "$Items Low Price",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 11
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.0.3",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "database": "default",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+          },
+          "dateColDataType": "",
+          "dateLoading": false,
+          "dateTimeColDataType": "highTime",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
+          "intervalFactor": 1,
+          "query": "SELECT\n    highTime,\n    high\n    \nFROM $table\n\nWHERE name = $Items\n\nORDER BY highTime DESC\n\nLIMIT 1 \n",
+          "rawQuery": "SELECT\n    highTime,\n    high\n    \nFROM default.rs_live_prices\n\nWHERE name = 'Dragon arrow'\n\nORDER BY highTime DESC\n\nLIMIT 1",
+          "refId": "A",
+          "round": "0s",
+          "skip_comments": true,
+          "table": "rs_live_prices",
+          "tableLoading": false
+        }
+      ],
+      "title": "$Items High Price",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "vertamedia-clickhouse-datasource",
+        "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 15
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^profit$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.0.3",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "database": "default",
+          "datasource": {
+            "type": "vertamedia-clickhouse-datasource",
+            "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+          },
+          "dateColDataType": "",
+          "dateLoading": false,
+          "dateTimeColDataType": "highTime",
+          "dateTimeType": "DATETIME",
+          "datetimeLoading": false,
+          "extrapolate": true,
+          "format": "time_series",
+          "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "intervalFactor": 1,
+          "query": "SELECT\n    toUInt64(highTime) + toUInt64(lowTime) as AggTime,\n    (high - (high * .01)) - low as profit\nFROM $table\n\nWHERE  name = $Items\n\nORDER BY AggTime DESC\n\nLIMIT 1\n",
+          "rawQuery": "SELECT\n    toUInt64(highTime) + toUInt64(lowTime) as AggTime,\n    (high - (high * .01)) - low as profit\nFROM default.rs_live_prices\n\nWHERE  name = 'Dragon bones'\n\nORDER BY AggTime DESC\n\nLIMIT 1",
+          "refId": "A",
+          "round": "0s",
+          "skip_comments": true,
+          "table": "rs_live_prices",
+          "tableLoading": false
+        }
+      ],
+      "title": "$Items Potential Profit",
+      "type": "stat"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "Fayrg bones",
+          "value": "Fayrg bones"
+        },
+        "datasource": {
+          "type": "vertamedia-clickhouse-datasource",
+          "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
+        },
+        "definition": "select distinct name from rs_live_prices",
+        "hide": 0,
+        "includeAll": false,
+        "multi": true,
+        "name": "Items",
+        "options": [],
+        "query": "select distinct name from rs_live_prices",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Mind the Gap",
+  "uid": "b1e39934-2a88-4e7d-9336-de298905e4a5",
+  "version": 10,
+  "weekStart": ""
+}
