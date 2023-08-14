@@ -10,7 +10,7 @@ from clickhouse_driver import Client
 
 from runespreader.main import Runespreader
 
-config = yaml.load(open("/home/charles/.config/runespreader"), Loader=yaml.Loader)
+config = yaml.load(open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader)
 profit_threshold = config.get("POTENTIAL_PROFIT")
 discord_url = config.get("BOT_WEBHOOK")
 
