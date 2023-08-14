@@ -6,20 +6,22 @@ import numpy as np
 import pandas as pd
 import requests
 import yaml
+import urllib.parse
 from clickhouse_driver import Client
 
 from runespreader.main import Runespreader
+from requests import get
 
-config = yaml.load(open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader)
+ip = get('https://api.ipify.org').content.decode('utf8')
+config = yaml.load(
+    open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
+)
 profit_threshold = config.get("POTENTIAL_PROFIT")
 discord_url = config.get("BOT_WEBHOOK")
 
+
 def embed_field(name, value):
-    return {
-        "name": name,
-        "value": value,
-        "inline": True
-    }
+    return {"name": name, "value": value, "inline": True}
 
 
 def refresh_vol_list():
@@ -64,9 +66,9 @@ while True:
             "high_time"
         ] < now - pd.Timedelta("15 minutes"):
             continue
-        profit_per_item = (last_buy["high"] - (last_buy["high"] * 0.01)) - last_sell[
-            "low"
-        ]
+        profit_per_item = (
+            last_buy["high"] - (last_buy["high"] * 0.01)
+        ) - last_sell["low"]
         limit = r.name_to_limit.get(symbol)
         potential_profit = profit_per_item * limit
         if potential_profit >= profit_threshold:
@@ -76,18 +78,22 @@ while True:
                 symbol_high_df = high_df[high_df["name"] == symbol]
                 # 1 hour averages
                 symbol_low_df_15m = symbol_low_df[
-                    symbol_low_df["low_time"] > (now - pd.Timedelta("15 minutes"))
+                    symbol_low_df["low_time"]
+                    > (now - pd.Timedelta("15 minutes"))
                 ]
                 symbol_high_df_15m = symbol_high_df[
-                    symbol_high_df["high_time"] > (now - pd.Timedelta("15 minutes"))
+                    symbol_high_df["high_time"]
+                    > (now - pd.Timedelta("15 minutes"))
                 ]
                 m15_low = symbol_low_df_15m["low"].mean()
                 m15_high = symbol_high_df_15m["high"].mean()
                 symbol_low_df_30m = symbol_low_df[
-                    symbol_low_df["low_time"] > (now - pd.Timedelta("30 minutes"))
+                    symbol_low_df["low_time"]
+                    > (now - pd.Timedelta("30 minutes"))
                 ]
                 symbol_high_df_30m = symbol_high_df[
-                    symbol_high_df["high_time"] > (now - pd.Timedelta("30 minutes"))
+                    symbol_high_df["high_time"]
+                    > (now - pd.Timedelta("30 minutes"))
                 ]
                 m30_low = symbol_low_df_30m["low"].mean()
                 m30_high = symbol_high_df_30m["high"].mean()
@@ -99,63 +105,57 @@ while True:
                 ]
                 h1_low = symbol_low_df_1h["low"].mean()
                 h1_high = symbol_high_df_1h["high"].mean()
-                """
-                ```
-                    {symbol}
-                    last_sell: {int(last_sell["low"])} @ {last_sell["low_time"]}
-                    last_buy: {int(last_buy["high"])} @ {last_buy["high_time"]}
-                    15m_sell_avg: {m15_low}
-                    15m_buy_avg: {m15_high}
-                    30m_sell_avg: {m30_low}
-                    30m_buy_avg: {m30_high}
-                    1h_sell_avg: {h1_low}
-                    1h_buy_avg: {h1_high}
-                    limit: {limit}
-                    profit_per_item: {profit_per_item}
-                    potential_profit: {potential_profit}
-                ```
-                """
 
                 fields = []
 
-                fields.append(embed_field(
-                    "Last sell",
-                    f'{int(last_sell["low"])} <t:{last_sell["low_time"].to_timestamp()}:R>',
-                ))
-                fields.append(embed_field(
-                    "Last buy",
-                    f'{int(last_buy["high"])} <t:{last_buy["high_time"].to_timestamp()}:R>',
-                ))
+                fields.append(
+                    embed_field(
+                        "Last sell",
+                        f'{int(last_sell["low"])} <t:{int(last_sell["low_time"].timestamp())}:R>',
+                    )
+                )
+                fields.append(
+                    embed_field(
+                        "Last buy",
+                        f'{int(last_buy["high"])} <t:{int(last_buy["high_time"].timestamp())}:R>',
+                    )
+                )
 
-                fields.append(embed_field("15m sell avg", str(m15_low)))
-                fields.append(embed_field("15m buy avg", str(m15_high)))
-                fields.append(embed_field("30m sell avg", str(m30_low)))
-                fields.append(embed_field("30m buy avg", str(m30_high)))
-                fields.append(embed_field("1h sell avg", str(h1_low)))
-                fields.append(embed_field("1h buy avg", str(h1_high)))
-                fields.append(embed_field("Limit", str(limit)))
-                fields.append(embed_field("Profit per item", str(profit_per_item)))
-                fields.append(embed_field("Potential profit", str(potential_profit)))
-                
+                fields.append(embed_field("15m sell avg", str(int(m15_low))))
+                fields.append(embed_field("15m buy avg", str(int(m15_high))))
+                fields.append(embed_field("30m sell avg", str(int(m30_low))))
+                fields.append(embed_field("30m buy avg", str(int(m30_high))))
+                fields.append(embed_field("1h sell avg", str(int(h1_low))))
+                fields.append(embed_field("1h buy avg", str(int(h1_high))))
+                fields.append(embed_field("Limit", str(int(limit))))
+                fields.append(
+                    embed_field("Profit per item", str(int(profit_per_item)))
+                )
+                fields.append(
+                    embed_field("Potential profit", str(int(potential_profit)))
+                )
+
                 embed = {}
                 embed["title"] = symbol
                 embed["fields"] = fields
+                embed["thumbnail"] = {
+                    "url": f"https://oldschool.runescape.wiki/images/{symbol.replace(' ', '_')}.png?cache"
+                }
+                embed["description"] = f'[Open in Grafana](http://{ip}:13300/d/b1e39934-2a88-4e7d-9336-de298905e4a5/mind-the-gap?orgId=1&from=now-1h&to=now&refresh=30s&var-Items={urllib.parse.quote_plus(symbol)})'
 
                 if profit_per_item < 25:
-                    embed["color"] = 0xe81515
+                    embed["color"] = 0xE81515
                 elif profit_per_item < 100:
-                    embed["color"] = 0xe8b915
+                    embed["color"] = 0xE8B915
                 else:
-                    embed["color"] = 0x1ae815
+                    embed["color"] = 0x1AE815
 
-                requests.post(discord_url, json={
-                    "embeds": [embed],
-                    # "components": [
-                    #     {
-                    #         "type"
-                    #     }
-                    # ]
-                })
+                requests.post(
+                    discord_url,
+                    json={
+                        "embeds": [embed]
+                    },
+                )
                 # print(content)
                 deal_dict[symbol] = time.time()
     print(deal_dict)

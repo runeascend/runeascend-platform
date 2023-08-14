@@ -7,8 +7,12 @@ from clickhouse_driver import Client
 
 from runespreader.main import Runespreader
 
-config = yaml.load(open("/home/charles/.config/runespreader"), Loader=yaml.Loader)
+config = yaml.load(
+    open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
+)
 
+
+print("starting...")
 while True:
     r = Runespreader()
     client = Client(host="localhost", password=config.get("CH_PASSWORD"))
@@ -18,7 +22,9 @@ while True:
     )
     client.execute(
         "INSERT INTO rs_live_prices VALUES",
-        df[["name", "id", "high", "highTime", "low", "lowTime"]].to_dict("records"),
+        df[["name", "id", "high", "highTime", "low", "lowTime"]].to_dict(
+            "records"
+        ),
         types_check=True,
     )
     client.execute(
