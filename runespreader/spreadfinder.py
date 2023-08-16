@@ -1,18 +1,18 @@
 import os
 import time
+import urllib.parse
 from datetime import datetime, timedelta, timezone
 
 import numpy as np
 import pandas as pd
 import requests
 import yaml
-import urllib.parse
 from clickhouse_driver import Client
-
-from runespreader.main import Runespreader
 from requests import get
 
-ip = get('https://api.ipify.org').content.decode('utf8')
+from runespreader.main import Runespreader
+
+ip = get("https://api.ipify.org").content.decode("utf8")
 config = yaml.load(
     open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
 )
@@ -141,7 +141,9 @@ while True:
                 embed["thumbnail"] = {
                     "url": f"https://oldschool.runescape.wiki/images/{symbol.replace(' ', '_')}.png?cache"
                 }
-                embed["description"] = f'[Open in Grafana](http://{ip}:13300/d/b1e39934-2a88-4e7d-9336-de298905e4a5/mind-the-gap?orgId=1&from=now-1h&to=now&refresh=30s&var-Items={urllib.parse.quote_plus(symbol)})'
+                embed[
+                    "description"
+                ] = f"[Open in Grafana](http://{ip}:13300/d/b1e39934-2a88-4e7d-9336-de298905e4a5/mind-the-gap?orgId=1&from=now-1h&to=now&refresh=30s&var-Items={urllib.parse.quote_plus(symbol)})"
 
                 if profit_per_item < 25:
                     embed["color"] = 0xE81515
@@ -152,9 +154,7 @@ while True:
 
                 requests.post(
                     discord_url,
-                    json={
-                        "embeds": [embed]
-                    },
+                    json={"embeds": [embed]},
                 )
                 # print(content)
                 deal_dict[symbol] = time.time()
