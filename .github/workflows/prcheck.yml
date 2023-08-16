@@ -1,0 +1,22 @@
+name: PR Check
+on: [pull_request]
+jobs:
+  test:
+    runs-on: python:3.11
+    steps:
+      - uses: actions/checkout@v2
+      - name: python setup
+        run: make -f makefile.pipeline create-dev
+      - name:  format check 
+        run: make -f makefile.pipeline format-check
+      - name: pytest
+        run: make -f makefile.pipeline test
+      - name: upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: htmlcov/
+      
+      
+      
+    
