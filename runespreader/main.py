@@ -1,6 +1,10 @@
-import difflib
+import os
+import typing
 
+import pandas as pd
 import requests
+import yaml
+from clickhouse_driver import Client
 
 
 class Runespreader:
@@ -17,18 +21,19 @@ class Runespreader:
         self.id_to_limit = {}
         self.name_to_limit = {}
         for item in raw_list:
-            self.id_to_name_mapping[item.get("id")] = item.get("name")
-            self.name_to_id_mapping[item.get("name")] = item.get("id")
-            self.id_to_limit[item.get("id")] = item.get("limit")
-            self.name_to_limit[item.get("name")] = item.get("limit")
+            self.id_to_name_mapping[str(item.get("id"))] = item.get("name")
+            self.name_to_id_mapping[str(item.get("name"))] = str(item.get("id"))
+            self.id_to_limit[str(item.get("id"))] = item.get("limit")
+            self.name_to_limit[str(item.get("name"))] = item.get("limit")
 
-    def get_id_for_name(self, name):
+    def get_id_for_name(self, name: str) -> str:
         return self.name_to_id_mapping.get(name)
 
-    def get_name_for_id(self, uuid):
-        return self.id_to_name_mapping.get(int(uuid))
+    def get_name_for_id(self, uuid: str | int) -> str:
+        return self.id_to_name_mapping.get(str(uuid))
 
-    def get_latest_data_for_id(self, uuid):
+    def get_latest_data_for_id(self, uuid: str | int) -> dict:
+        uuid = str(uuid)
         data_dict = (
             requests.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/latest/?id={uuid}",
@@ -36,24 +41,60 @@ class Runespreader:
             )
             .json()
             .get("data")
-            .get(str(uuid))
+            .get(uuid)
         )
         resp_json = requests.get(
             "https://prices.runescape.wiki/api/v1/osrs/volumes",
             headers=self.custom_headers,
         ).json()
-        data_dict["vol"] = resp_json.get("data").get(str(uuid))
+        data_dict["vol"] = resp_json.get("data").get(uuid)
         data_dict["vol_ts"] = resp_json.get("timestamp")
         return data_dict
 
-    def get_volumes(self):
+    def get_volumes(self) -> dict:
+        """
+        returns a dict with timestamp: <daily time>
+        and a list in a key called data. The keys of
+        said list are the ids.
+        """
         resp_json = requests.get(
             "https://prices.runescape.wiki/api/v1/osrs/volumes",
             headers=self.custom_headers,
         ).json()
         return resp_json
 
-    def get_latest_data_for_all_symbols(self):
+    def get_item_data(self, name: str, interval: str) -> tuple:
+        """
+        queries clickhouse for an item on a specific time interval
+        and returns the dataframes.
+
+        returns a tuple with two df, first one is sells
+        second one is buys
+        """
+        config = yaml.load(
+            open(f"{os.path.expanduser('~')}/.config/runespreader"),
+            Loader=yaml.Loader,
+        )
+        client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+        rs_sells = client.execute(
+            f"select low, lowTime, name, id from rs_sells where lowTime >= now() - interval {interval} and name = '{name}'"
+        )
+        rs_buys = client.execute(
+            f"select high, highTime, name, id from rs_buys where highTime >= now() - interval {interval} and name = '{name}'"
+        )
+        high_df = pd.DataFrame(
+            rs_buys, columns=["high", "high_time", "name", "id"]
+        ).sort_values(["high_time"], ascending=False)
+        low_df = pd.DataFrame(
+            rs_sells, columns=["low", "low_time", "name", "id"]
+        ).sort_values(["low_time"], ascending=False)
+        return low_df, high_df
+
+    def get_latest_data_for_all_symbols(self) -> list:
+        """
+        returns a list of dicts containing entry values of highTime, high
+        lowTime, low, name, and id
+        """
         data_dict = (
             requests.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/latest/",
