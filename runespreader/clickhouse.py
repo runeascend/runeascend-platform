@@ -21,13 +21,6 @@ while True:
         data, columns=["high", "highTime", "low", "lowTime", "name", "id"]
     )
     client.execute(
-        "INSERT INTO rs_live_prices VALUES",
-        df[["name", "id", "high", "highTime", "low", "lowTime"]].to_dict(
-            "records"
-        ),
-        types_check=True,
-    )
-    client.execute(
         "INSERT INTO rs_buys VALUES",
         df[["name", "id", "high", "highTime"]].to_dict("records"),
         types_check=True,

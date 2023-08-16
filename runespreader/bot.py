@@ -67,14 +67,15 @@ def main():
     async def on_message(message):
         if message.author == client.user:
             return
-
         if f"<@{client.application_id}>" in message.content:
             r = Runespreader()
             response = await parse_intent(
                 message.content.replace(f"<@{client.application_id}>", ""), r
             )
             await message.channel.send(response)
-
+            return
+        return
+    
     config = yaml.load(
         open(f"{os.path.expanduser('~')}/.config/runespreader"),
         Loader=yaml.Loader,
