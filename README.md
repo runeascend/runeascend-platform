@@ -8,8 +8,9 @@ CREATE TABLE default.rs_buys
     `name` String COMMENT 'Friendly Name',
     `id` UInt64 COMMENT 'Not friendly Name'
 )
-ENGINE = MergeTree
-ORDER BY (highTime, id)
+ENGINE = ReplacingMergeTree 
+ORDER BY (id, highTime)
+PRIMARY KEY (id, highTime)
 SETTINGS index_granularity = 8192 
 ```
 
@@ -21,22 +22,8 @@ CREATE TABLE default.rs_sells
     `name` String COMMENT 'Friendly Name',
     `id` UInt64 COMMENT 'Not friendly Name'
 )
-ENGINE = MergeTree
-ORDER BY (lowTime, id)
-SETTINGS index_granularity = 8192
-```
-
-```
-CREATE TABLE default.rs_live_prices
-(
-    `high` UInt64 COMMENT 'Buy price',
-    `highTime` DateTime COMMENT 'Buy time',
-    `low` UInt64 COMMENT 'Sell price',
-    `lowTime` DateTime COMMENT 'Sell time',
-    `name` String COMMENT 'Friendly Name',
-    `id` UInt64 COMMENT 'Not friendly Name'
-)
-ENGINE = MergeTree
-ORDER BY (highTime, lowTime, id)
+ENGINE = ReplacingMergeTree 
+ORDER BY (id, lowTime)
+PRIMARY KEY (id, lowTime)
 SETTINGS index_granularity = 8192
 ```

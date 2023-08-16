@@ -82,8 +82,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -180,8 +179,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -255,8 +253,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -330,8 +327,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "#6ED0E0",
@@ -398,7 +394,7 @@
       "type": "stat"
     }
   ],
-  "refresh": "5s",
+  "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -407,8 +403,12 @@
       {
         "current": {
           "selected": false,
-          "text": "Fayrg bones",
-          "value": "Fayrg bones"
+          "text": [
+            "Coconut"
+          ],
+          "value": [
+            "Coconut"
+          ]
         },
         "datasource": {
           "type": "vertamedia-clickhouse-datasource",
@@ -430,13 +430,13 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Mind the Gap",
   "uid": "b1e39934-2a88-4e7d-9336-de298905e4a5",
-  "version": 10,
+  "version": 11,
   "weekStart": ""
 }
