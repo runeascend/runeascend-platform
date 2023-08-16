@@ -2,7 +2,9 @@ name: PR Check
 on: [pull_request]
 jobs:
   test:
-    runs-on: python:3.11
+    runs-on: self-hosted
+    container:
+      image: python:3.11
     steps:
       - uses: actions/checkout@v2
       - name: python setup
