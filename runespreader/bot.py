@@ -75,7 +75,7 @@ def main():
             await message.channel.send(response)
             return
         return
-    
+
     config = yaml.load(
         open(f"{os.path.expanduser('~')}/.config/runespreader"),
         Loader=yaml.Loader,
