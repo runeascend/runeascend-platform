@@ -6,17 +6,10 @@ import yaml
 
 from runespreader.main import Runespreader
 
-intents = discord.Intents.default()
-intents.message_content = True
 
-client = discord.Client(intents=intents)
-
-time_expression = re.compile(r"((?:hour)|(?:minute)|(?:day)|(?:week))")
-number_expression = re.compile(r"(\d+)")
-
-
-async def parse_intent(message):
-    r = Runespreader()
+async def parse_intent(message: str, r) -> str:
+    time_expression = re.compile(r"((?:hour)|(?:minute)|(?:day)|(?:week))")
+    number_expression = re.compile(r"(\d+)")
 
     def find_item(message):
         item = ""
@@ -28,13 +21,13 @@ async def parse_intent(message):
     intents = ["average", "latest"]
     if "average" in message:
         # find time unit
-        unit = re.findall(time_expression, message.lower())[0]
+        unit = re.findall(time_expression, message.lower())
         if not unit:
             return "No time unit provided, can't do much with this /shrug"
-        print(message)
-        number = re.findall(number_expression, message)[0]
-        print(number)
+        unit = unit[0]
+        number = re.findall(number_expression, message)
         if number:
+            number = number[0]
             interval = f"{number} {unit}"
         elif "last" in message:
             # Assume someone wants -1 of time unit
@@ -60,26 +53,36 @@ async def parse_intent(message):
         return f"Unable to understand your intent, I can do any of the following: {intents}"
 
 
-@client.event
-async def on_ready():
-    print("Ready to scape? @runespreader")
+def main():
+    intents = discord.Intents.default()
+    intents.message_content = True
+
+    client = discord.Client(intents=intents)
+
+    @client.event
+    async def on_ready():
+        print("Ready to scape? @runespreader")
+
+    @client.event
+    async def on_message(message):
+        if message.author == client.user:
+            return
+
+        if f"<@{client.application_id}>" in message.content:
+            r = Runespreader()
+            response = await parse_intent(
+                message.content.replace(f"<@{client.application_id}>", ""), r
+            )
+            await message.channel.send(response)
+
+    config = yaml.load(
+        open(f"{os.path.expanduser('~')}/.config/runespreader"),
+        Loader=yaml.Loader,
+    )
+    bot_token = config.get("BOT_TOKEN")
+
+    client.run(bot_token)
 
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if f"<@{client.application_id}>" in message.content:
-        response = await parse_intent(
-            message.content.replace(f"<@{client.application_id}>", "")
-        )
-        await message.channel.send(response)
-
-
-config = yaml.load(
-    open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
-)
-bot_token = config.get("BOT_TOKEN")
-
-client.run(bot_token)
+if __name__ == "__main__":
+    main()

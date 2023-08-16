@@ -8,4 +8,5 @@ create-dev:
 	echo "run source .venv/bin/activate"
 update-dev:
 	.venv/bin/python3 -m poetry update
-	
+test:
+	poetry run pytest
