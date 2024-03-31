@@ -21,10 +21,12 @@ pytest-asyncio = "^0.21.1"
 anyio = "^3.7.1"
 pytest-cov = "^4.1.0"
 
-
+[tool.poetry.scripts]
+spreader = "runespreader.spreaderfinder:main"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
 
 
 [tool.black]

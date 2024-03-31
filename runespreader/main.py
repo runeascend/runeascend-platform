@@ -23,8 +23,8 @@ class Runespreader:
         for item in raw_list:
             self.id_to_name_mapping[str(item.get("id"))] = item.get("name")
             self.name_to_id_mapping[str(item.get("name"))] = str(item.get("id"))
-            self.id_to_limit[str(item.get("id"))] = item.get("limit")
-            self.name_to_limit[str(item.get("name"))] = item.get("limit")
+            self.id_to_limit[str(item.get("id"))] = item.get("limit", 0)
+            self.name_to_limit[str(item.get("name"))] = item.get("limit", 0)
 
     def get_id_for_name(self, name: str) -> str:
         return self.name_to_id_mapping.get(name)
