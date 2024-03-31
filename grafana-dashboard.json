@@ -82,7 +82,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -127,13 +128,14 @@
           "extrapolate": true,
           "format": "time_series",
           "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
           "intervalFactor": 1,
           "query": "SELECT\n    $timeSeries as t,\n    name,\n    avg(high)\nFROM $table\n\nWHERE $timeFilter and name in ($Items)\n\nGROUP BY t, name\n\nORDER BY t\n",
-          "rawQuery": "SELECT\n    (intDiv(toUInt32(highTime), 1) * 1) * 1000 as t,\n    name,\n    avg(high)\nFROM default.rs_live_prices\n\nWHERE highTime >= toDateTime(1691801915) AND highTime <= toDateTime(1691802215) and name in ('Dragon bones')\n\nGROUP BY t, name\n\nORDER BY t",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(highTime), 1) * 1) * 1000 as t,\n    name,\n    avg(high)\nFROM default.rs_buys\n\nWHERE highTime >= toDateTime(1692231374) AND highTime <= toDateTime(1692231674) and name in ('Coconut')\n\nGROUP BY t, name\n\nORDER BY t",
           "refId": "A",
           "round": "0s",
           "skip_comments": true,
-          "table": "rs_live_prices",
+          "table": "rs_buys",
           "tableLoading": false
         },
         {
@@ -153,11 +155,11 @@
           "hide": false,
           "intervalFactor": 1,
           "query": "SELECT\n    $timeSeries as t,\n    name,\n    avg(low)\nFROM $table\n\nWHERE $timeFilter and name in ($Items)\n\nGROUP BY t, name\n\nORDER BY t\n",
-          "rawQuery": "SELECT\n    (intDiv(toUInt32(lowTime), 1) * 1) * 1000 as t,\n    name,\n    avg(low)\nFROM default.rs_live_prices\n\nWHERE lowTime >= toDateTime(1691801915) AND lowTime <= toDateTime(1691802215) and name in ('Dragon bones')\n\nGROUP BY t, name\n\nORDER BY t",
+          "rawQuery": "SELECT\n    (intDiv(toUInt32(lowTime), 1) * 1) * 1000 as t,\n    name,\n    avg(low)\nFROM default.rs_sells\n\nWHERE lowTime >= toDateTime(1692231374) AND lowTime <= toDateTime(1692231674) and name in ('Coconut')\n\nGROUP BY t, name\n\nORDER BY t",
           "refId": "B",
           "round": "0s",
           "skip_comments": true,
-          "table": "rs_live_prices",
+          "table": "rs_sells",
           "tableLoading": false
         }
       ],
@@ -179,7 +181,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -218,7 +221,7 @@
           },
           "dateColDataType": "",
           "dateLoading": false,
-          "dateTimeColDataType": "highTime",
+          "dateTimeColDataType": "lowTime",
           "dateTimeType": "DATETIME",
           "datetimeLoading": false,
           "extrapolate": true,
@@ -227,11 +230,11 @@
           "hide": false,
           "intervalFactor": 1,
           "query": "SELECT\n    lowTime,\n    low\nFROM $table\n\nWHERE name = $Items\n\nORDER BY lowTime DESC\n\nLIMIT 1 \n",
-          "rawQuery": "SELECT\n    lowTime,\n    low\nFROM default.rs_live_prices\n\nWHERE name = 'Dragon arrow'\n\nORDER BY lowTime DESC\n\nLIMIT 1",
+          "rawQuery": "SELECT\n    lowTime,\n    low\nFROM default.rs_sells\n\nWHERE name = 'Coconut'\n\nORDER BY lowTime DESC\n\nLIMIT 1",
           "refId": "A",
           "round": "0s",
           "skip_comments": true,
-          "table": "rs_live_prices",
+          "table": "rs_sells",
           "tableLoading": false
         }
       ],
@@ -253,7 +256,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
@@ -301,11 +305,11 @@
           "hide": false,
           "intervalFactor": 1,
           "query": "SELECT\n    highTime,\n    high\n    \nFROM $table\n\nWHERE name = $Items\n\nORDER BY highTime DESC\n\nLIMIT 1 \n",
-          "rawQuery": "SELECT\n    highTime,\n    high\n    \nFROM default.rs_live_prices\n\nWHERE name = 'Dragon arrow'\n\nORDER BY highTime DESC\n\nLIMIT 1",
+          "rawQuery": "SELECT\n    highTime,\n    high\n    \nFROM default.rs_buys\n\nWHERE name = 'Coconut'\n\nORDER BY highTime DESC\n\nLIMIT 1",
           "refId": "A",
           "round": "0s",
           "skip_comments": true,
-          "table": "rs_live_prices",
+          "table": "rs_buys",
           "tableLoading": false
         }
       ],
@@ -327,7 +331,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red"
+                "color": "red",
+                "value": null
               },
               {
                 "color": "#6ED0E0",
@@ -367,34 +372,28 @@
       "repeatDirection": "v",
       "targets": [
         {
-          "database": "default",
           "datasource": {
             "type": "vertamedia-clickhouse-datasource",
             "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
           },
-          "dateColDataType": "",
-          "dateLoading": false,
-          "dateTimeColDataType": "highTime",
           "dateTimeType": "DATETIME",
-          "datetimeLoading": false,
           "extrapolate": true,
           "format": "time_series",
           "formattedQuery": "SELECT $timeSeries as t, count() FROM $table WHERE $timeFilter GROUP BY t ORDER BY t",
+          "hide": false,
           "intervalFactor": 1,
-          "query": "SELECT\n    toUInt64(highTime) + toUInt64(lowTime) as AggTime,\n    (high - (high * .01)) - low as profit\nFROM $table\n\nWHERE  name = $Items\n\nORDER BY AggTime DESC\n\nLIMIT 1\n",
-          "rawQuery": "SELECT\n    toUInt64(highTime) + toUInt64(lowTime) as AggTime,\n    (high - (high * .01)) - low as profit\nFROM default.rs_live_prices\n\nWHERE  name = 'Dragon bones'\n\nORDER BY AggTime DESC\n\nLIMIT 1",
+          "query": "SELECT\n    toUInt64(highTime) + toUInt64(lowTime) as AggTime,\n    (high - (high * .01)) - low as profit\nFROM rs_sells\nJOIN rs_buys ON rs_sells.id = rs_buys.id\nWHERE  rs_sells.name = $Items AND rs_buys.name = $Items AND rs_buys.highTime > now() - interval 15 minute and rs_sells.lowTime > now() - interval 15 minute\nORDER BY AggTime DESC\nLIMIT 1\n",
+          "rawQuery": "SELECT\n    toUInt64(highTime) + toUInt64(lowTime) as AggTime,\n    (high - (high * .01)) - low as profit\nFROM rs_sells\nJOIN rs_buys ON rs_sells.id = rs_buys.id\nWHERE  rs_sells.name = 'Dynamite' AND rs_buys.name = 'Dynamite' AND rs_buys.highTime > now() - interval 15 minute and rs_sells.lowTime > now() - interval 15 minute\nORDER BY AggTime DESC\nLIMIT 1",
           "refId": "A",
           "round": "0s",
-          "skip_comments": true,
-          "table": "rs_live_prices",
-          "tableLoading": false
+          "skip_comments": true
         }
       ],
       "title": "$Items Potential Profit",
       "type": "stat"
     }
   ],
-  "refresh": "30s",
+  "refresh": "5s",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -402,7 +401,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
             "Coconut"
           ],
@@ -414,13 +413,13 @@
           "type": "vertamedia-clickhouse-datasource",
           "uid": "af84ea23-f84a-4e95-b8d0-711dbdac1c83"
         },
-        "definition": "select distinct name from rs_live_prices",
+        "definition": "select distinct name from rs_buys",
         "hide": 0,
         "includeAll": false,
         "multi": true,
         "name": "Items",
         "options": [],
-        "query": "select distinct name from rs_live_prices",
+        "query": "select distinct name from rs_buys",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -437,6 +436,6 @@
   "timezone": "",
   "title": "Mind the Gap",
   "uid": "b1e39934-2a88-4e7d-9336-de298905e4a5",
-  "version": 11,
+  "version": 18,
   "weekStart": ""
 }
