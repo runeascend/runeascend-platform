@@ -6,13 +6,15 @@ jobs:
     container:
       image: python:3.11
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: python setup
-        run: make -f makefile.pipeline create-dev
+        run: |
+          pip install poetry==1.4.2
+          python3 -m poetry install
       - name:  format check 
-        run: make -f makefile.pipeline format-check
+        run: make format-check
       - name: pytest
-        run: make -f makefile.pipeline test
+        run: make test
       - name: upload test results
         uses: actions/upload-artifact@v2
         with:
