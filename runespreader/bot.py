@@ -4,7 +4,7 @@ import re
 import discord
 import yaml
 
-from runespreader.main import Runespreader
+from runespreader.spreader import Runespreader
 
 
 async def parse_intent(message: str, r) -> str:

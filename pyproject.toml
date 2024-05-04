@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "runespreader"
-version = "0.1.1"
+version = "0.1.3"
 description = ""
 authors = ["Charles Warren <ciwarren@mtu.edu>"]
+include = ["runespreader", "tests"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -26,8 +27,6 @@ spreader = "runespreader.spreaderfinder:main"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
 
 [tool.black]
 line-length = 80

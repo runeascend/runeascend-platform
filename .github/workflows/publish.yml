@@ -1,0 +1,83 @@
+name: PR Check
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - pyproject.toml
+jobs:
+  tag:
+    name: Tag
+    runs-on: self-hosted
+    outputs:
+      name: ${{ steps.evaluate_release.outputs.name }}
+      new_version: ${{ steps.evaluate_release.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 
+
+      - name: Eval Release Change
+        id: evaluate_release
+        run: |
+          git fetch --tags
+          LAST=$(git tag -l | sort -V | tail -n 1 | sed 's/v//')
+          NOW=$(sed -nE "s/^version = \"([0-9]+\.[0-9]+\.[0-9]+)\"/1/p" pyproject.toml)
+          printf '%s\n%s\n' "$NOW" "$LAST" | sort --check=quiet --version-sort && ret=$? || ret=$?
+          if [[ $ret -eq 1]]; then
+            echo "new_version=true" >> $GITHUB_OUTPUT
+          else
+            echo "new_version=false" >> $GITHUB_OUTPUT
+          fi
+          echo "name=v$NOW" >> $GITHUB_OUTPUT
+    
+  push_tag:
+    name: Push Tag
+    runs-on: self-hosted
+    needs: tag
+    if: needs.tag.outputs.new_version == 'true'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Tag
+        run: |
+          git tag ${{ needs.tag.outputs.name }}
+          git push origin ${{ needs.tag.outputs.name }}
+
+  release:
+    name: Create Release
+    runs-on: self-hosted
+    needs:
+      - tag
+      - push_tag
+    if: needs.tag.outputs.new_version == 'true'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with: 
+          name: ${{ needs.tag.outputs.name }}
+          tag_name: ${{ needs.tag.outputs.name }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+    
+  publish_to_pypi:
+    name: Publish to pypi
+    runs-on: self-hosted
+    needs:
+      - tag
+      - release
+    env:
+      POETRY_HTTP_BASIC_PASSWORD: "${{ secrets.PYPI_TOKEN }}"
+    steps:
+    - name: Checkout code
+      id: checkout-code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.sha }}
+        fetch-depth: 0
+    - name: Build Env
+      run: make create-dev
+    - name: Publish to pypi
+      run: poetry publish --build --username __token__ --password $POETRY_HTTP_BASIC_PASSWORD

@@ -5,7 +5,7 @@ import pandas as pd
 import yaml
 from clickhouse_driver import Client
 
-from runespreader.main import Runespreader
+from runespreader.spreader import Runespreader
 
 config = yaml.load(
     open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
