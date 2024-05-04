@@ -64,6 +64,8 @@ jobs:
   publish_to_pypi:
     name: Publish to pypi
     runs-on: self-hosted
+    container:
+      image: python:3.11
     needs:
       - tag
       - release
@@ -76,7 +78,9 @@ jobs:
       with:
         ref: ${{ github.sha }}
         fetch-depth: 0
-    - name: Build Env
-      run: make create-dev
+    - name: python setup
+      run: |
+          pip install poetry==1.4.2
+          python3 -m poetry install
     - name: Publish to pypi
       run: poetry publish --build --username __token__ --password $POETRY_HTTP_BASIC_PASSWORD
