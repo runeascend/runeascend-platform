@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "runespreader"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 authors = ["Charles Warren <ciwarren@mtu.edu>"]
 include = ["runespreader", "tests"]

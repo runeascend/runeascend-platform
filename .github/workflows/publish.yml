@@ -9,8 +9,6 @@ jobs:
   tag:
     name: Tag
     runs-on: self-hosted
-    container:
-      image: python:3.11
     outputs:
       name: ${{ steps.evaluate_release.outputs.name }}
       new_version: ${{ steps.evaluate_release.outputs.new_version }}
@@ -36,8 +34,6 @@ jobs:
   push_tag:
     name: Push Tag
     runs-on: self-hosted
-    container:
-      image: python:3.11
     needs: tag
     if: needs.tag.outputs.new_version == 'true'
     steps:
@@ -51,8 +47,6 @@ jobs:
   release:
     name: Create Release
     runs-on: self-hosted
-    container:
-      image: python:3.11
     needs:
       - tag
       - push_tag
@@ -72,8 +66,6 @@ jobs:
   publish_to_pypi:
     name: Publish to pypi
     runs-on: self-hosted
-    container:
-      image: python:3.11
     needs:
       - tag
       - release
