@@ -10,9 +10,11 @@ jobs:
       - name: python setup
         run: |
           pip install poetry==1.4.2
-          python3 -m poetry install
+          python3 -m poetry install --with dev
       - name:  format check 
         run: make format-check
+      - name: dependency check
+        run: make dep-check
       - name: pytest
         run: make test
       - name: upload test results
