@@ -26,7 +26,7 @@ jobs:
           LAST=$(git tag -l | sort -V | tail -n 1 | sed 's/v//')
           NOW=$(sed -nE "s/^version = \"([0-9]+\.[0-9]+\.[0-9]+)\"/1/p" pyproject.toml)
           printf '%s\n%s\n' "$NOW" "$LAST" | sort --check=quiet --version-sort && ret=$? || ret=$?
-          if [[ $ret -eq 1]]; then
+          if [[ $ret -eq 1 ]]; then
             echo "new_version=true" >> $GITHUB_OUTPUT
           else
             echo "new_version=false" >> $GITHUB_OUTPUT
