@@ -1,9 +1,8 @@
 import os
 import time
 import urllib.parse
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
-import numpy as np
 import pandas as pd
 import requests
 import yaml
@@ -63,7 +62,7 @@ def main():
                 last_buy = high_df[high_df["name"] == symbol].iloc[0]
             except:
                 continue
-            now = pd.Timestamp(datetime.utcnow()).floor(freq="S")
+            now = pd.Timestamp(datetime.utcnow()).floor(freq="s")
             if last_sell["low_time"] < now - pd.Timedelta(
                 "15 minutes"
             ) or last_buy["high_time"] < now - pd.Timedelta("15 minutes"):
@@ -74,7 +73,7 @@ def main():
             limit = r.name_to_limit.get(symbol)
             potential_profit = profit_per_item * limit
             if potential_profit >= profit_threshold:
-                now = pd.Timestamp(datetime.utcnow()).floor(freq="S")
+                now = pd.Timestamp(datetime.utcnow()).floor(freq="s")
                 if deal_dict.get(symbol, 0) < time.time() - 300:
                     symbol_low_df = low_df[low_df["name"] == symbol]
                     symbol_high_df = high_df[high_df["name"] == symbol]
@@ -157,9 +156,9 @@ def main():
                     embed["thumbnail"] = {
                         "url": f"https://oldschool.runescape.wiki/images/{symbol.replace(' ', '_')}.png?cache"
                     }
-                    embed[
-                        "description"
-                    ] = f"[Open in Grafana](http://{ip}:13300/d/b1e39934-2a88-4e7d-9336-de298905e4a5/mind-the-gap?orgId=1&from=now-1h&to=now&refresh=30s&var-Items={urllib.parse.quote_plus(symbol)})"
+                    embed["description"] = (
+                        f"[Open in Grafana](http://{ip}:13300/d/b1e39934-2a88-4e7d-9336-de298905e4a5/mind-the-gap?orgId=1&from=now-1h&to=now&refresh=30s&var-Items={urllib.parse.quote_plus(symbol)})"
+                    )
 
                     if profit_per_item < 25:
                         embed["color"] = 0xE81515
