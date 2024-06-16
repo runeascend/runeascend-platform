@@ -12,11 +12,14 @@ pandas = "^2.0.3"
 clickhouse-driver = "^0.2.6"
 pyyaml = "^6.0.1"
 discord = "^2.3.2"
-numpy = "^1.26.4"
+twisted = "^24.3.0"
+kafka-python = "^2.0.2"
+structlog = "^24.2.0"
+requests = "^2.32.3"
 
 [tool.poetry.scripts]
 spreader = "runespreader.spreaderfinder:main"
-
+publisher = "runespreader.publisher:main"
 [tool.poetry.group.dev.dependencies]
 deptry = "^0.16.1"
 black = "^24.4.2"
