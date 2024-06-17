@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 
 import pandas as pd
+import requests
 import structlog
 import yaml
 from clickhouse_driver import Client
@@ -95,7 +96,48 @@ class mkt_data_publisher(publisher):
         super().__init__(config, "osrs-mkt-data")
 
     def gather_data(self):
-        return self.r.get_latest_data_for_all_symbols()
+        data_array = []
+        latest_data_dict = (
+            requests.get(
+                f"https://prices.runescape.wiki/api/v1/osrs/latest/",
+                headers=self.r.custom_headers,
+            )
+            .json()
+            .get("data")
+        )
+        volume_data_dict = (
+            requests.get(
+                f"https://prices.runescape.wiki/api/v1/osrs/5m/",
+                headers=self.r.custom_headers,
+            )
+            .json()
+            .get("data")
+        )
+        print(volume_data_dict)
+        for entry_key, entry_val in latest_data_dict.items():
+            entry_val["name"] = self.r.get_name_for_id(int(entry_key))
+            entry_val["id"] = int(entry_key)
+            entry_val.update(volume_data_dict.get(entry_key, {}))
+            if (
+                not entry_val.get("high")
+                or not entry_val.get("low")
+                or not entry_val.get("name")
+            ):
+                continue
+            entry_val["avgHighPrice"] = (
+                entry_val.get("avgHighPrice", 0)
+                if isinstance(entry_val.get("avgHighPrice"), int)
+                else 0
+            )
+            entry_val["avgLowPrice"] = (
+                entry_val.get("avgLowPrice", 0)
+                if isinstance(entry_val.get("avgLowPrice"), int)
+                else 0
+            )
+            entry_val["highPriceVolume"] = entry_val.get("highPriceVolume", 0)
+            entry_val["lowPriceVolume"] = entry_val.get("lowPriceVolume", 0)
+            data_array.append(entry_val)
+        return data_array
 
     def create_message(self, symbol_data):
         key = str(symbol_data["id"])
