@@ -114,3 +114,30 @@ class Runespreader:
                 continue
             data_array.append(entry_val)
         return data_array
+
+    def get_5_minute_data(self) -> list:
+        data_dict = (
+            requests.get(
+                f"https://prices.runescape.wiki/api/v1/osrs/5m",
+                headers=self.custom_headers,
+            )
+            .json()
+            .get("data")
+        )
+        data_array = []
+        for entry_key, entry_val in data_dict.items():
+            entry_val["name"] = self.get_name_for_id(int(entry_key))
+            entry_val["id"] = int(entry_key)
+            entry_val["avgHighPrice"] = (
+                entry_val["avgHighPrice"]
+                if isinstance(entry_val["avgHighPrice"], int)
+                else 0
+            )
+            entry_val["avgLowPrice"] = (
+                entry_val["avgLowPrice"]
+                if isinstance(entry_val["avgLowPrice"], int)
+                else 0
+            )
+
+            data_array.append(entry_val)
+        return data_array
