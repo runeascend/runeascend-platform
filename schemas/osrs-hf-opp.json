@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "symbol": {
+      "type": "string",
+      "description": "The name of the item."
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the item."
+    },
+    "profit_per_item": {
+      "type": "number",
+      "description": "The profit per item."
+    },
+    "limit": {
+      "type": "integer",
+      "description": "The limit of items."
+    },
+    "m15_low": {
+      "type": "number",
+      "description": "The lowest price in the 15-minute interval."
+    },
+    "m15_high": {
+      "type": "number",
+      "description": "The highest price in the 15-minute interval."
+    },
+    "m30_low": {
+      "type": "number",
+      "description": "The lowest price in the 30-minute interval."
+    },
+    "m30_high": {
+      "type": "number",
+      "description": "The highest price in the 30-minute interval."
+    },
+    "h1_low": {
+      "type": "number",
+      "description": "The lowest price in the 1-hour interval."
+    },
+    "h1_high": {
+      "type": "number",
+      "description": "The highest price in the 1-hour interval."
+    },
+    "last_sell": {
+      "type": "integer",
+      "description": "The last selling price."
+    },
+    "last_sell_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp of the last sell."
+    },
+    "last_buy": {
+      "type": "integer",
+      "description": "The last buying price."
+    },
+    "last_buy_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp of the last buy."
+    }
+  },
+  "required": [
+    "symbol",
+    "id",
+    "profit_per_item",
+    "limit",
+    "m15_low",
+    "m15_high",
+    "m30_low",
+    "m30_high",
+    "h1_low",
+    "h1_high",
+    "last_sell",
+    "last_sell_time",
+    "last_buy",
+    "last_buy_time"
+  ]
+}

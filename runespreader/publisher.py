@@ -42,7 +42,7 @@ class publisher:
         )
         self.r = Runespreader()
         self.producer = KafkaProducer(
-            bootstrap_servers="localhost:9092",
+            bootstrap_servers="10.0.0.20:9092",
             value_serializer=lambda v: json.dumps(v).encode("utf-8"),
         )
         structlog.configure(
@@ -123,18 +123,35 @@ class mkt_data_publisher(publisher):
                 or not entry_val.get("name")
             ):
                 continue
-            entry_val["avgHighPrice"] = (
+            entry_val["avg_high_price"] = (
                 entry_val.get("avgHighPrice", 0)
                 if isinstance(entry_val.get("avgHighPrice"), int)
                 else 0
             )
-            entry_val["avgLowPrice"] = (
+            entry_val["avg_low_price"] = (
                 entry_val.get("avgLowPrice", 0)
                 if isinstance(entry_val.get("avgLowPrice"), int)
                 else 0
             )
-            entry_val["highPriceVolume"] = entry_val.get("highPriceVolume", 0)
-            entry_val["lowPriceVolume"] = entry_val.get("lowPriceVolume", 0)
+            entry_val["high_price_volume"] = entry_val.get("highPriceVolume", 0)
+            entry_val["low_price_volume"] = entry_val.get("lowPriceVolume", 0)
+            entry_val["high_time"] = datetime.fromtimestamp(
+                entry_val.get("highTime", 0)
+            ).isoformat()
+            entry_val["low_time"] = datetime.fromtimestamp(
+                entry_val.get("lowTime", 0)
+            ).isoformat()
+            keys_to_drop = [
+                "highTime",
+                "lowTime",
+                "avgHighPrice",
+                "avgLowPrice",
+                "avgHighPriceVolume",
+                "avgLowPriceVolume",
+            ]
+            entry_val = {
+                k: v for k, v in entry_val.items() if k not in keys_to_drop
+            }
             data_array.append(entry_val)
         return data_array
 
@@ -289,6 +306,9 @@ class mf_publisher(publisher):
         value["d_interval"] = self.d_interval
         value["signal_interval"] = self.signal_interval
         value["time_window"] = self.time_window
+        value["low_time"] = value["low_time"].isoformat()
+        value["high_time"] = value["high_time"].isoformat()
+        value["time"] = value["time"].isoformat()
         return value
 
     def run(self):
@@ -357,10 +377,6 @@ class mf_publisher(publisher):
                 symbol_price_df["d_ewm"] = d
                 value = symbol_price_df.to_dict("records")[-1]
                 key = self.r.get_id_for_name(symbol)
-                value["low_time"] = value["low_time"].timestamp()
-                value["high_time"] = value["high_time"].timestamp()
-                value["time"] = value["time"].timestamp()
-
                 message = self.create_message(value)
 
                 self.publish(key, message)
