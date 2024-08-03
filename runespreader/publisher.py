@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 import requests
@@ -81,7 +81,7 @@ class ref_data_publisher(publisher):
 
     def create_message(self):
         limits = self.r.name_to_limit
-        mappings = self.r.name_to_id_mapping
+        mappings = {k: int(v) for k, v in self.r.name_to_id_mapping.items()}
         timestamp, high_volume_symbols = refresh_vol_list(self.config)
         value = {
             "limits": limits,
@@ -113,7 +113,6 @@ class mkt_data_publisher(publisher):
             .json()
             .get("data")
         )
-        print(volume_data_dict)
         for entry_key, entry_val in latest_data_dict.items():
             entry_val["name"] = self.r.get_name_for_id(int(entry_key))
             entry_val["id"] = int(entry_key)
@@ -272,6 +271,102 @@ class hf_opp_publisher(publisher):
         return 0
 
 
+class mf_publisher(publisher):
+    def __init__(self, config):
+        super().__init__(config, "osrs-mf-opp")
+        self.k_interval = 26
+        self.d_interval = 12
+        self.signal_interval = 6
+        self.time_window = 60 * 10  # 10 Minutes
+
+    def refresh(self):
+        self.logger.info("Refreshing data, client TTL Expired")
+        self.timestamp, symbol_data = refresh_vol_list(self.config)
+        self.symbols_to_track = symbol_data.keys()
+
+    def create_message(self, value):
+        value["k_interval"] = self.k_interval
+        value["d_interval"] = self.d_interval
+        value["signal_interval"] = self.signal_interval
+        value["time_window"] = self.time_window
+        return value
+
+    def run(self):
+        self.logger.info("Publisher running", publisher="mf_opp")
+        self.iterations -= 1
+        if self.iterations < 0:
+            self.refresh()
+            self.iterations = self.base_iterations
+        rs_sells = self.client.execute(
+            f"select low, lowTime, name, id from rs_sells where lowTime >= now() - interval 6 hour"
+        )
+        rs_buys = self.client.execute(
+            f"select high, highTime, name, id from rs_buys where highTime >= now() - interval 6 hour"
+        )
+        high_df = pd.DataFrame(
+            rs_buys, columns=["high", "high_time", "name", "id"]
+        ).sort_values(["high_time"], ascending=False)
+        low_df = pd.DataFrame(
+            rs_sells, columns=["low", "low_time", "name", "id"]
+        ).sort_values(["low_time"], ascending=False)
+        price_df = Runespreader.collate_dfs(
+            high_df=high_df,
+            low_df=low_df,
+            symbol_list=self.symbols_to_track,
+            interval=timedelta(seconds=self.time_window),
+        )
+        for symbol in self.symbols_to_track:
+            symbol_price_df = price_df[price_df["name"] == symbol]
+            if len(symbol_price_df) > 0:
+                # Bad mid_price calculation but given this is meant to track trends I don't think it actually matters, can add vwap later if needed
+                symbol_price_df["mid_price"] = (
+                    symbol_price_df["low"] + symbol_price_df["high"]
+                ) / 2
+                k = (
+                    symbol_price_df["mid_price"]
+                    .ewm(
+                        span=self.k_interval,
+                        adjust=False,
+                        min_periods=self.k_interval,
+                    )
+                    .mean()
+                )
+                d = (
+                    symbol_price_df["mid_price"]
+                    .ewm(
+                        span=self.d_interval,
+                        adjust=False,
+                        min_periods=self.d_interval,
+                    )
+                    .mean()
+                )
+                macd = k - d
+                signal = macd.ewm(
+                    span=self.signal_interval,
+                    adjust=False,
+                    min_periods=self.signal_interval,
+                ).mean()
+                h = macd - signal
+                macd_signal_crossover = (macd > signal) & (
+                    macd.shift(1) <= signal
+                )
+                symbol_price_df["macd_signal_crossover"] = macd_signal_crossover
+                symbol_price_df["macd_trigger"] = h
+                symbol_price_df["macd_signal"] = signal
+                symbol_price_df["k_ewm"] = k
+                symbol_price_df["d_ewm"] = d
+                value = symbol_price_df.to_dict("records")[-1]
+                key = self.r.get_id_for_name(symbol)
+                value["low_time"] = value["low_time"].timestamp()
+                value["high_time"] = value["high_time"].timestamp()
+                value["time"] = value["time"].timestamp()
+
+                message = self.create_message(value)
+
+                self.publish(key, message)
+        return 0
+
+
 class sweep_publisher(publisher):
     def __init__(self, config):
         super().__init__(config, "osrs-sweeps")
@@ -353,16 +448,19 @@ def main():
 
     r_pub = ref_data_publisher(config)
     m_pub = mkt_data_publisher(config)
+    mf_pub = mf_publisher(config)
     h_pub = hf_opp_publisher(config)
     s_pub = sweep_publisher(config)
 
     r = task.LoopingCall(r_pub.run)
     m = task.LoopingCall(m_pub.run)
+    mf = task.LoopingCall(mf_pub.run)
     h = task.LoopingCall(h_pub.run)
     s = task.LoopingCall(s_pub.run)
 
     r.start(config.get("REF_DATA_INTERVAL"))
     m.start(config.get("MKT_DATA_INTERVAL"))
+    mf.start(config.get("MF_OPP_INTERVAL"))
     h.start(config.get("HF_OPP_INTERVAL"))
     s.start(config.get("SWEEP_INTERVAL"))
 
