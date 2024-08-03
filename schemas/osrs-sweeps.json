@@ -1,0 +1,72 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "The name of the item."
+      },
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for the item."
+      },
+      "limit": {
+        "type": "integer",
+        "description": "The limit of items."
+      },
+      "percent_sweep": {
+        "type": "integer",
+        "description": "The percentage sweep."
+      },
+      "last_sell": {
+        "type": "integer",
+        "description": "The last selling price."
+      },
+      "last_sell_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp of the last sell."
+      },
+      "last_buy": {
+        "type": "integer",
+        "description": "The last buying price."
+      },
+      "last_buy_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp of the last buy."
+      },
+      "second_to_last_sell": {
+        "type": "integer",
+        "description": "The second to last selling price."
+      },
+      "second_to_last_sell_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp of the second to last sell."
+      },
+      "second_to_last_buy": {
+        "type": "integer",
+        "description": "The second to last buying price."
+      },
+      "second_to_last_buy_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp of the second to last buy."
+      }
+    },
+    "required": [
+      "symbol",
+      "id",
+      "limit",
+      "percent_sweep",
+      "last_sell",
+      "last_sell_time",
+      "last_buy",
+      "last_buy_time",
+      "second_to_last_sell",
+      "second_to_last_sell_time",
+      "second_to_last_buy",
+      "second_to_last_buy_time"
+    ]
+  }

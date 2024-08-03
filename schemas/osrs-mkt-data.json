@@ -1,0 +1,60 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "high": {
+        "type": "integer",
+        "description": "The highest price recorded."
+      },
+      "low": {
+        "type": "integer",
+        "description": "The lowest price recorded."
+      },
+      "name": {
+        "type": "string",
+        "description": "The name of the item."
+      },
+      "id": {
+        "type": "integer",
+        "description": "Unique identifier for the item."
+      },
+      "avg_high_price": {
+        "type": "integer",
+        "description": "The average high price."
+      },
+      "avg_low_price": {
+        "type": "integer",
+        "description": "The average low price."
+      },
+      "high_price_volume": {
+        "type": "integer",
+        "description": "The volume of transactions at the high price."
+      },
+      "low_price_volume": {
+        "type": "integer",
+        "description": "The volume of transactions at the low price."
+      },
+      "high_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp when the highest price was recorded."
+      },
+      "low_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp when the lowest price was recorded."
+      }
+    },
+    "required": [
+      "high",
+      "low",
+      "name",
+      "id",
+      "avg_high_price",
+      "avg_low_price",
+      "high_price_volume",
+      "low_price_volume",
+      "high_time",
+      "low_time"
+    ]
+  }

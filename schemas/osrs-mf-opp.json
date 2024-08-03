@@ -1,0 +1,96 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp of the current data point."
+      },
+      "name": {
+        "type": "string",
+        "description": "The name of the item."
+      },
+      "id": {
+        "type": "integer",
+        "description": "Unique identifier for the item."
+      },
+      "low_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp when the lowest price was recorded."
+      },
+      "low": {
+        "type": "integer",
+        "description": "The lowest price recorded."
+      },
+      "high_time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp when the highest price was recorded."
+      },
+      "high": {
+        "type": "integer",
+        "description": "The highest price recorded."
+      },
+      "mid_price": {
+        "type": "number",
+        "description": "The mid price between the high and low."
+      },
+      "macd_signal_crossover": {
+        "type": "boolean",
+        "description": "Indicates if there is a MACD signal crossover."
+      },
+      "macd_trigger": {
+        "type": "number",
+        "description": "The MACD trigger value."
+      },
+      "macd_signal": {
+        "type": "number",
+        "description": "The MACD signal value."
+      },
+      "k_ewm": {
+        "type": "number",
+        "description": "The K Exponential Weighted Moving Average."
+      },
+      "d_ewm": {
+        "type": "number",
+        "description": "The D Exponential Weighted Moving Average."
+      },
+      "k_interval": {
+        "type": "integer",
+        "description": "The interval used for the K EMA."
+      },
+      "d_interval": {
+        "type": "integer",
+        "description": "The interval used for the D EMA."
+      },
+      "signal_interval": {
+        "type": "integer",
+        "description": "The interval used for the signal calculation."
+      },
+      "time_window": {
+        "type": "integer",
+        "description": "The time window for the data in seconds."
+      }
+    },
+    "required": [
+      "time",
+      "name",
+      "id",
+      "low_time",
+      "low",
+      "high_time",
+      "high",
+      "mid_price",
+      "macd_signal_crossover",
+      "macd_trigger",
+      "macd_signal",
+      "k_ewm",
+      "d_ewm",
+      "k_interval",
+      "d_interval",
+      "signal_interval",
+      "time_window"
+    ]
+  }
