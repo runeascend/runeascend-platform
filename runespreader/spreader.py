@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 import pandas as pd
 import requests
@@ -141,3 +142,59 @@ class Runespreader:
 
             data_array.append(entry_val)
         return data_array
+
+    @staticmethod
+    def collate_dfs(
+        low_df, high_df, interval=timedelta(minutes=1), symbol_list=[]
+    ) -> pd.DataFrame:
+        """
+        Logic
+
+        sep tables hold buy and sells
+
+        need to understand the market at any given actionable interval
+
+        since we open position when liquidity is present join on sells with last(highTime) < current_time in a window function
+        """
+        earliest = low_df["low_time"].min()
+        latest = low_df["low_time"].max()
+        pd_array = []
+
+        for symbol in symbol_list:
+            current_time = earliest
+            symbol_array = []
+            symbol_low_df = low_df[low_df["name"] == symbol].sort_values(
+                ["low_time"], ascending=False
+            )
+            symbol_high_df = high_df[high_df["name"] == symbol].sort_values(
+                ["high_time"], ascending=False
+            )
+
+            while current_time <= latest:
+                # Get the sells and buys for the current time
+                current_time = current_time + interval
+                low_entry = symbol_low_df[
+                    symbol_low_df["low_time"] < current_time
+                ]
+                if low_entry.empty:
+                    continue
+                low_entry = low_entry.iloc[0]
+                high_entry = symbol_high_df[
+                    symbol_high_df["high_time"] < current_time
+                ]
+                if high_entry.empty:
+                    continue
+                high_entry = high_entry.iloc[0]
+                entry = {
+                    "time": current_time,
+                    "name": symbol,
+                    "id": low_entry["id"],
+                    "low_time": low_entry["low_time"],
+                    "low": low_entry["low"],
+                    "high_time": high_entry["high_time"],
+                    "high": high_entry["high"],
+                }
+                symbol_array.append(entry)
+
+            pd_array.append(pd.DataFrame(symbol_array))
+        return pd.concat(pd_array)
