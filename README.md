@@ -70,6 +70,20 @@ RestartSec=5s
 [Install]
 WantedBy=multi-user.target 
 ```
+Runewriter - Kafka Consumer that writes to clickhouse
+```
+[Unit]
+Description= OSRS Kafka Consumer
+[Service]
+User=<your_user_here>
+WorkingDirectory=/home/<your_user_here>/tmp # There is a directory emitted from faust while running so you need to specify a location
+ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && python3 /home/<your_user_here>/runescape/runespreader/consumer.py worker -l info"
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=multi-user.target 
+```
+
 
 ## Setting up clickhouse
 
@@ -102,6 +116,50 @@ ENGINE = ReplacingMergeTree
 ORDER BY (id, lowTime)
 PRIMARY KEY (id, lowTime)
 SETTINGS index_granularity = 8192
+```
+```
+CREATE TABLE osrs_hf_opp (
+    symbol LowCardinality(String),
+    id LowCardinality(String),
+    profit_per_item Float64 CODEC(Delta, ZSTD),
+    limit UInt32 CODEC(Delta, ZSTD),
+    m15_low Float64 CODEC(Delta, ZSTD),
+    m15_high Float64 CODEC(Delta, ZSTD),
+    m30_low Float64 CODEC(Delta, ZSTD),
+    m30_high Float64 CODEC(Delta, ZSTD),
+    h1_low Float64 CODEC(Delta, ZSTD),
+    h1_high Float64 CODEC(Delta, ZSTD),
+    last_sell Float64 CODEC(Delta, ZSTD),
+    last_sell_time DateTime CODEC(DoubleDelta, ZSTD),
+    last_buy Float64 CODEC(Delta, ZSTD),
+    last_buy_time DateTime CODEC(DoubleDelta, ZSTD),
+    _time DateTime DEFAULT now() CODEC(DoubleDelta, ZSTD)
+) ENGINE = MergeTree()
+PARTITION BY toDate(_time)
+ORDER BY (id, _time)
+TTL _time + INTERVAL 7 DAY;
+```
+```
+CREATE TABLE default.osrs_sweeps (
+    symbol LowCardinality(String),
+    id LowCardinality(String),
+    limit UInt32 CODEC(Delta(4), ZSTD(1)),
+    percent_sweep Float32 CODEC(Delta(4), ZSTD(1)),
+    last_sell Float64 CODEC(Delta(8), ZSTD(1)),
+    last_sell_time DateTime CODEC(DoubleDelta, ZSTD(1)),
+    last_buy Float64 CODEC(Delta(8), ZSTD(1)),
+    last_buy_time DateTime CODEC(DoubleDelta, ZSTD(1)),
+    second_to_last_sell Float64 CODEC(Delta(8), ZSTD(1)),
+    second_to_last_sell_time DateTime CODEC(DoubleDelta, ZSTD(1)),
+    second_to_last_buy Float64 CODEC(Delta(8), ZSTD(1)),
+    second_to_last_buy_time DateTime CODEC(DoubleDelta, ZSTD(1)),
+    _time DateTime DEFAULT now() CODEC(DoubleDelta, ZSTD(1))
+)
+ENGINE = MergeTree
+PARTITION BY toDate(_time)
+ORDER BY (_time, id)
+TTL _time + toIntervalDay(7)
+SETTINGS index_granularity = 8192;
 ```
 
 ## Using grafana for visualization

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "runespreader"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 authors = ["Charles Warren <ciwarren@mtu.edu>"]
 include = ["runespreader", "tests"]
@@ -16,6 +16,7 @@ twisted = "^24.3.0"
 kafka-python = "^2.0.2"
 structlog = "^24.2.0"
 requests = "^2.32.3"
+faust-streaming = "^0.11.1"
 
 [tool.poetry.scripts]
 spreader = "runespreader.spreaderfinder:main"
