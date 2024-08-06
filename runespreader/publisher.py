@@ -115,6 +115,7 @@ class mkt_data_publisher(publisher):
         )
         for entry_key, entry_val in latest_data_dict.items():
             entry_val["name"] = self.r.get_name_for_id(int(entry_key))
+            entry_val["time"] = datetime.now().isoformat()
             entry_val["id"] = int(entry_key)
             entry_val.update(volume_data_dict.get(entry_key, {}))
             if (
@@ -146,8 +147,8 @@ class mkt_data_publisher(publisher):
                 "lowTime",
                 "avgHighPrice",
                 "avgLowPrice",
-                "avgHighPriceVolume",
-                "avgLowPriceVolume",
+                "highPriceVolume",
+                "lowPriceVolume",
             ]
             entry_val = {
                 k: v for k, v in entry_val.items() if k not in keys_to_drop

@@ -110,6 +110,74 @@ yarl = ">=1.0,<2.0"
 speedups = ["Brotli", "aiodns (>=3.2.0)", "brotlicffi"]
 
 [[package]]
+name = "aiohttp-cors"
+version = "0.7.0"
+description = "CORS support for aiohttp"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "aiohttp-cors-0.7.0.tar.gz", hash = "sha256:4d39c6d7100fd9764ed1caf8cebf0eb01bf5e3f24e2e073fda6234bc48b19f5d"},
+    {file = "aiohttp_cors-0.7.0-py3-none-any.whl", hash = "sha256:0451ba59fdf6909d0e2cd21e4c0a43752bc0703d33fc78ae94d9d9321710193e"},
+]
+
+[package.dependencies]
+aiohttp = ">=1.1"
+
+[[package]]
+name = "aiokafka"
+version = "0.11.0"
+description = "Kafka integration with asyncio"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "aiokafka-0.11.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:926f93fb6a39891fd4364494432b479c0602f9cac708778d4a262a2c2e20d3b4"},
+    {file = "aiokafka-0.11.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:38e1917e706c1158d5e1f612d1fc1b40f706dc46c534e73ab4de8ae2868a31be"},
+    {file = "aiokafka-0.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:516e1d68d9a377860b2e17453580afe304605bc71894f684d3e7b6618f6f939f"},
+    {file = "aiokafka-0.11.0-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:acfd0a5d0aec762ba73eeab73b23edce14f315793f063b6a4b223b6f79e36bb8"},
+    {file = "aiokafka-0.11.0-cp310-cp310-win32.whl", hash = "sha256:0d80590c4ef0ba546a299cee22ea27c3360c14241ec43a8e6904653f7b22d328"},
+    {file = "aiokafka-0.11.0-cp310-cp310-win_amd64.whl", hash = "sha256:1d519bf9875ac867fb19d55de3750833b1eb6379a08de29a68618e24e6a49fc0"},
+    {file = "aiokafka-0.11.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:0e957b42ae959365efbb45c9b5de38032c573608553c3670ad8695cc210abec9"},
+    {file = "aiokafka-0.11.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:224db2447f6c1024198d8342e7099198f90401e2fa29c0762afbc51eadf5c490"},
+    {file = "aiokafka-0.11.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6ef3e7c8a923e502caa4d24041f2be778fd7f9ee4587bf0bcb4f74cac05122fa"},
+    {file = "aiokafka-0.11.0-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:59f4b935589ebb244620afad8bf3320e3bc86879a8b1c692ad06bd324f6c6127"},
+    {file = "aiokafka-0.11.0-cp311-cp311-win32.whl", hash = "sha256:560839ae6bc13e71025d71e94df36980f5c6e36a64916439e598b6457267a37f"},
+    {file = "aiokafka-0.11.0-cp311-cp311-win_amd64.whl", hash = "sha256:1f8ae91f0373830e4664376157fe61b611ca7e573d8a559b151aef5bf53df46c"},
+    {file = "aiokafka-0.11.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:4e0cc080a7f4c659ee4e1baa1c32adedcccb105a52156d4909f357d76fac0dc1"},
+    {file = "aiokafka-0.11.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:55a07a39d82c595223a17015ea738d152544cee979d3d6d822707a082465621c"},
+    {file = "aiokafka-0.11.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3711fa64ee8640dcd4cb640f1030f9439d02e85acd57010d09053017092d8cc2"},
+    {file = "aiokafka-0.11.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:818a6f8e44b02113b9e795bee6029c8a4e525ab38f29d7adb0201f3fec74c808"},
+    {file = "aiokafka-0.11.0-cp312-cp312-win32.whl", hash = "sha256:8ba981956243767b37c929845c398fda2a2e35a4034d218badbe2b62e6f98f96"},
+    {file = "aiokafka-0.11.0-cp312-cp312-win_amd64.whl", hash = "sha256:9a478a14fd23fd1ffe9c7a21238d818b5f5e0626f7f06146b687f3699298391b"},
+    {file = "aiokafka-0.11.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:0973a245b8b9daf8ef6814253a80a700f1f54d2da7d88f6fe479f46e0fd83053"},
+    {file = "aiokafka-0.11.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ee0c61a2dcabbe4474ff237d708f9bd663dd2317e03a9cb7239a212c9ee05b12"},
+    {file = "aiokafka-0.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:230170ce2e8a0eb852e2e8b78b08ce2e29b77dfe2c51bd56f5ab4be0f332a63b"},
+    {file = "aiokafka-0.11.0-cp38-cp38-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:eac78a009b713e28b5b4c4daae9d062acbf2b7980e5734467643a810134583b5"},
+    {file = "aiokafka-0.11.0-cp38-cp38-win32.whl", hash = "sha256:73584be8ba7906e3f33ca0f08f6af21a9ae31b86c6b635b93db3b1e6f452657b"},
+    {file = "aiokafka-0.11.0-cp38-cp38-win_amd64.whl", hash = "sha256:d724b6fc484e453b373052813e4e543fc028a22c3fbda10e13b6829740000b8a"},
+    {file = "aiokafka-0.11.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:419dd28c8ed6e926061bdc60929af08a6b52f1721e1179d9d21cc72ae28fd6f6"},
+    {file = "aiokafka-0.11.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f1c85f66eb3564c5e74d8e4c25df4ac1fd94f1a6f6e66f005aafa6f791bde215"},
+    {file = "aiokafka-0.11.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eaafe134de57b184f3c030e1a11051590caff7953c8bf58048eefd8d828e39d7"},
+    {file = "aiokafka-0.11.0-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:807f699cf916369b1a512e4f2eaec714398c202d8803328ef8711967d99a56ce"},
+    {file = "aiokafka-0.11.0-cp39-cp39-win32.whl", hash = "sha256:d59fc7aec088c9ffc02d37e61591f053459bd11912cf04c70ac4f7e60405667d"},
+    {file = "aiokafka-0.11.0-cp39-cp39-win_amd64.whl", hash = "sha256:702aec15b63bad5e4476294bcb1cb177559149fce3e59335794f004c279cbd6a"},
+    {file = "aiokafka-0.11.0.tar.gz", hash = "sha256:f2def07fe1720c4fe37c0309e355afa9ff4a28e0aabfe847be0692461ac69352"},
+]
+
+[package.dependencies]
+async-timeout = "*"
+packaging = "*"
+typing-extensions = ">=4.10.0"
+
+[package.extras]
+all = ["cramjam (>=2.8.0)", "gssapi"]
+gssapi = ["gssapi"]
+lz4 = ["cramjam (>=2.8.0)"]
+snappy = ["cramjam"]
+zstd = ["cramjam"]
+
+[[package]]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
@@ -123,6 +191,18 @@ files = [
 
 [package.dependencies]
 frozenlist = ">=1.1.0"
+
+[[package]]
+name = "async-timeout"
+version = "4.0.3"
+description = "Timeout context manager for asyncio programs"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
+    {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
+]
 
 [[package]]
 name = "attrs"
@@ -324,7 +404,7 @@ files = [
 name = "click"
 version = "8.1.7"
 description = "Composable command line interface toolkit"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -462,13 +542,31 @@ zstd = ["clickhouse-cityhash (>=1.0.2.1)", "zstd"]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
+
+[[package]]
+name = "colorlog"
+version = "6.8.2"
+description = "Add colours to the output of Python's logging module."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "colorlog-6.8.2-py3-none-any.whl", hash = "sha256:4dcbb62368e2800cb3c5abd348da7e53f6c362dda502ec27c560b2e58a66bd33"},
+    {file = "colorlog-6.8.2.tar.gz", hash = "sha256:3e3e079a41feb5a1b64f978b5ea4f46040a94f11f0e8bbb8261e3dbbeca64d44"},
+]
+
+[package.dependencies]
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+
+[package.extras]
+development = ["black", "flake8", "mypy", "pytest", "types-colorama"]
 
 [[package]]
 name = "constantly"
@@ -548,6 +646,22 @@ files = [
 toml = ["tomli"]
 
 [[package]]
+name = "croniter"
+version = "2.0.7"
+description = "croniter provides iteration for datetime object with cron like format"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.6"
+files = [
+    {file = "croniter-2.0.7-py2.py3-none-any.whl", hash = "sha256:f15e80828d23920c4bb7f4d9340b932c9dcabecafc7775703c8b36d1253ed526"},
+    {file = "croniter-2.0.7.tar.gz", hash = "sha256:1041b912b4b1e03751a0993531becf77851ae6e8b334c9c76ffeffb8f055f53f"},
+]
+
+[package.dependencies]
+python-dateutil = "*"
+pytz = ">2021.1"
+
+[[package]]
 name = "deptry"
 version = "0.16.2"
 description = "A command line utility to check for unused, missing and transitive dependencies in a Python project."
@@ -607,6 +721,65 @@ docs = ["sphinx (==4.4.0)", "sphinx-inline-tabs (==2023.4.21)", "sphinxcontrib-a
 speed = ["Brotli", "aiodns (>=1.1)", "cchardet (==2.1.7)", "orjson (>=3.5.4)"]
 test = ["coverage[toml]", "pytest", "pytest-asyncio", "pytest-cov", "pytest-mock", "typing-extensions (>=4.3,<5)", "tzdata"]
 voice = ["PyNaCl (>=1.3.0,<1.6)"]
+
+[[package]]
+name = "faust-streaming"
+version = "0.11.1"
+description = "Python Stream Processing. A Faust fork"
+category = "main"
+optional = false
+python-versions = ">=3.8.0"
+files = [
+    {file = "faust-streaming-0.11.1.tar.gz", hash = "sha256:0b8b08e5388dc9fd4ecdb72cc8a51a9b996b60291777fb52183f65f2ed9962c4"},
+    {file = "faust_streaming-0.11.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:0d71380688510988392e544211f012bfe45d8c33afd04b1e05622502bbd25757"},
+    {file = "faust_streaming-0.11.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ab3bc2832040b9c4af46e4ee81d1a754fda96467a4de17c50e156bc53d7284a6"},
+    {file = "faust_streaming-0.11.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:548429c07bdc3390519f28dfcc8acbe71822e46e4b8c02b6e20762b4d918dd43"},
+    {file = "faust_streaming-0.11.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:913f03c53ea876125503fa8d21954edcce65f9ec1dce79565bde1a17d873f998"},
+    {file = "faust_streaming-0.11.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:5fb92f2e9bf166234029feaffeae66b098b4d257c923df00eccbca55d2ba3059"},
+    {file = "faust_streaming-0.11.1-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:74ce646e9288f8aecd824d98113c472801b04c4e52207445aa0a25bc05d5b455"},
+    {file = "faust_streaming-0.11.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:74a4dc34c179ff002c7c2a05a48718fff40fa326d1700df98fd0f3ea85aba8b5"},
+    {file = "faust_streaming-0.11.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:47740457b2e3be0bfea2ccd3589b1acd899dd1fef99fd7f93493605a87bab96a"},
+    {file = "faust_streaming-0.11.1-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:89acd63bcd9ba43a962d220ea19581d758141045ce31a5dc81b6d9681534c5ff"},
+    {file = "faust_streaming-0.11.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a1164d96e68bca16a1d3510356cb05e9c6ac604fe5bfae4cbb6cbe85ff55e728"},
+    {file = "faust_streaming-0.11.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:bc3560c7d8215486d075ee4f461214f9634e519ceebe30b0f7d49d9270bc9713"},
+    {file = "faust_streaming-0.11.1-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:53034f7bb9ebd4b4feefa96fe8227be5f6f2c0b1fc10eec6029005bad6398fdb"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.8.0,<4.0"
+aiohttp-cors = ">=0.7,<2.0"
+aiokafka = ">=0.9.0"
+click = ">=6.7,<8.2"
+croniter = ">=0.3.16"
+intervaltree = "*"
+mode-streaming = ">=0.4.0"
+mypy-extensions = "*"
+opentracing = ">=1.3.0,<=2.4.0"
+six = "*"
+terminaltables = ">=3.1,<4.0"
+venusian = "3.1.0"
+yarl = ">=1.0,<2.0"
+
+[package.extras]
+aiodns = ["aiodns (>=1.1)"]
+aiomonitor = ["aiomonitor (>=0.4.4)"]
+cchardet = ["faust-cchardet"]
+ciso8601 = ["ciso8601"]
+cython = ["cython"]
+datadog = ["datadog"]
+debug = ["aiomonitor (>=0.4.4)", "setproctitle (>=1.1)"]
+eventlet = ["dnspython", "faust-aioeventlet"]
+fast = ["aiodns (>=1.1)", "ciso8601", "cython", "faust-cchardet", "orjson (>=2.0,<4.0)", "setproctitle (>=1.1)"]
+orjson = ["orjson (>=2.0,<4.0)"]
+prometheus = ["prometheus-client"]
+redis = ["aredis (>=1.1.3,<2.0)"]
+rocksdb = ["faust-streaming-rocksdb (>=0.8.0)"]
+rocksdict = ["rocksdict (>=0.3.11,<4.0)"]
+sentry = ["raven (>=6.10.0,<7.0)", "raven-aiohttp (>=0.7.0)", "sentry-sdk (>=0.7.10)"]
+setproctitle = ["setproctitle (>=1.1)"]
+statsd = ["statsd (>=4.0.1,<4.1.0)"]
+uvloop = ["uvloop (>=0.8.1)"]
+yaml = ["pyyaml (>=5.1)"]
 
 [[package]]
 name = "frozenlist"
@@ -753,6 +926,20 @@ files = [
 ]
 
 [[package]]
+name = "intervaltree"
+version = "3.1.0"
+description = "Editable interval tree data structure for Python 2 and 3"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "intervaltree-3.1.0.tar.gz", hash = "sha256:902b1b88936918f9b2a19e0e5eb7ccb430ae45cde4f39ea4b36932920d33952d"},
+]
+
+[package.dependencies]
+sortedcontainers = ">=2.0,<3.0"
+
+[[package]]
 name = "isort"
 version = "5.13.2"
 description = "A Python utility / library to sort Python imports."
@@ -781,6 +968,27 @@ files = [
 
 [package.extras]
 crc32c = ["crc32c"]
+
+[[package]]
+name = "mode-streaming"
+version = "0.4.1"
+description = "AsyncIO Service-based programming"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "mode_streaming-0.4.1-py2.py3-none-any.whl", hash = "sha256:9e773e1e7982165e64ba35e59acffb2916dd01f2a86e8eb174f9e95023ec370a"},
+]
+
+[package.dependencies]
+colorlog = ">=6.0.0,<7.0.0"
+croniter = ">=2.0.0,<3.0.0"
+mypy-extensions = "*"
+
+[package.extras]
+eventlet = ["dnspython", "faust-aioeventlet"]
+gevent = ["asyncio-gevent (>=0.2,<1.0)"]
+uvloop = ["uvloop (>=0.19.0)"]
 
 [[package]]
 name = "multidict"
@@ -886,7 +1094,7 @@ files = [
 name = "mypy-extensions"
 version = "1.0.0"
 description = "Type system extensions for programs checked with the mypy type checker."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -950,10 +1158,24 @@ files = [
 ]
 
 [[package]]
+name = "opentracing"
+version = "2.4.0"
+description = "OpenTracing API for Python. See documentation at http://opentracing.io"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "opentracing-2.4.0.tar.gz", hash = "sha256:a173117e6ef580d55874734d1fa7ecb6f3655160b8b8974a2a1e98e5ec9c840d"},
+]
+
+[package.extras]
+tests = ["Sphinx", "doubles", "flake8", "flake8-quotes", "gevent", "mock", "pytest", "pytest-cov", "pytest-mock", "six (>=1.10.0,<2.0)", "sphinx_rtd_theme", "tornado"]
+
+[[package]]
 name = "packaging"
 version = "24.1"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
@@ -1267,6 +1489,18 @@ files = [
 ]
 
 [[package]]
+name = "sortedcontainers"
+version = "2.4.0"
+description = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"},
+    {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
+]
+
+[[package]]
 name = "structlog"
 version = "24.4.0"
 description = "Structured Logging for Python"
@@ -1283,6 +1517,18 @@ dev = ["freezegun (>=0.2.8)", "mypy (>=1.4)", "pretend", "pytest (>=6.0)", "pyte
 docs = ["cogapp", "furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-mermaid", "sphinxext-opengraph", "twisted"]
 tests = ["freezegun (>=0.2.8)", "pretend", "pytest (>=6.0)", "pytest-asyncio (>=0.17)", "simplejson"]
 typing = ["mypy (>=1.4)", "rich", "twisted"]
+
+[[package]]
+name = "terminaltables"
+version = "3.1.10"
+description = "Generate simple tables in terminals from a nested list of strings."
+category = "main"
+optional = false
+python-versions = ">=2.6"
+files = [
+    {file = "terminaltables-3.1.10-py2.py3-none-any.whl", hash = "sha256:e4fdc4179c9e4aab5f674d80f09d76fa436b96fdc698a8505e0a36bf0804a874"},
+    {file = "terminaltables-3.1.10.tar.gz", hash = "sha256:ba6eca5cb5ba02bba4c9f4f985af80c54ec3dccf94cfcd190154386255e47543"},
+]
 
 [[package]]
 name = "twisted"
@@ -1409,6 +1655,22 @@ brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)"]
 h2 = ["h2 (>=4,<5)"]
 socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["zstandard (>=0.18.0)"]
+
+[[package]]
+name = "venusian"
+version = "3.1.0"
+description = "A library for deferring decorator actions"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "venusian-3.1.0-py3-none-any.whl", hash = "sha256:d1fb1e49927f42573f6c9b7c4fcf61c892af8fdcaa2314daa01d9a560b23488d"},
+    {file = "venusian-3.1.0.tar.gz", hash = "sha256:eb72cdca6f3139a15dc80f9c95d3c10f8a54a0ba881eeef8e2ec5b42d3ee3a95"},
+]
+
+[package.extras]
+docs = ["Sphinx (>=4.3.2)", "pylons-sphinx-themes", "repoze.sphinx.autointerface", "sphinx-copybutton"]
+testing = ["coverage", "pytest", "pytest-cov"]
 
 [[package]]
 name = "yarl"
@@ -1571,4 +1833,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "691e85e58010d27d17668706e2f598d3e0a5adfa5811476f98389f99c688c32b"
+content-hash = "1aa4a6dd041cac58fa64b939080db427105da624b6743c9151fa7f018bed9a91"
