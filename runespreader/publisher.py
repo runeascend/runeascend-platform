@@ -222,6 +222,7 @@ class hf_opp_publisher(publisher):
         h1_low = symbol_low_df_1h["low"].mean()
         h1_high = symbol_high_df_1h["high"].mean()
         value = {
+            "time": datetime.now().isoformat(),
             "symbol": symbol,
             "id": id,
             "profit_per_item": profit_per_item,
@@ -398,6 +399,7 @@ class sweep_publisher(publisher):
         now = pd.Timestamp(datetime.utcnow()).floor(freq="s")
         id = self.r.get_id_for_name(symbol)
         value = {
+            "time": now.isoformat(),
             "symbol": symbol,
             "id": id,
             "limit": limit,

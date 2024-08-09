@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string",
+        "description": "The symbol of the fill"
+      },
+      "price": {
+        "type": "number",
+        "description": "The price of the fill"
+      },
+      "quantity": {
+        "type": "integer",
+        "description": "The quantity of the fill"
+      },
+      "time": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp when the fill was recorded"
+      },
+      "order_id": {
+        "type": "string",
+        "description": "The unique identifier for the order associated with the fill"
+      }
+    },
+    "required": ["symbol", "price", "quantity", "side", "time", "order_id"]
+  }
