@@ -1,13 +1,13 @@
 # Runespreader
 
-A python runescape market making library / app
+A python runescape trading application
 
 ## Installing
 
 ### From PyPI
 
 ```
-pip install runespreader
+pip install runeascend-platform
 ```
 
 ### From Project

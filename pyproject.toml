@@ -1,9 +1,9 @@
 [tool.poetry]
-name = "runeascend"
+name = "runeascend-platform"
 version = "1.0.0"
 description = "Runescape Trading Platform"
 authors = ["Charles Warren <ciwarren@mtu.edu>"]
-include = ["runeascend", "tests"]
+include = ["runeascend-platform", "tests"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -29,6 +29,7 @@ archiver = "runeascend.runespreader.archiver:main"
 
 # RuneVault
 consumer = "runeascend.runevault.consumer:main"
+vault = "runeascend.runevault.vault:main"
 
 [tool.poetry.group.dev.dependencies]
 deptry = "^0.16.1"
