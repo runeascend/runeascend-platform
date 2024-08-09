@@ -9,7 +9,7 @@ import yaml
 from clickhouse_driver import Client
 from requests import get
 
-from runespreader.spreader import Runespreader
+from runeascend.runespreader.spreader import Runespreader
 
 
 def embed_field(name, value):
