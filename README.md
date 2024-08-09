@@ -26,7 +26,7 @@ OSRS Discord Bot:
 Description= OSRS Bot
 [Service]
 User=<your_user_here>
-ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && python3 /home/<your_user_here>/runescape/runespreader/bot.py"
+ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && discord_bot"
 Restart=on-failure
 RestartSec=5s
 [Install]
@@ -36,23 +36,23 @@ WantedBy=multi-user.target
 Scraping script to populate clickhouse:
 ```
 [Unit]
-Description= OSRS GE Ripper
+Description= OSRS GE Archiver
 [Service]
 User=<your_user_here>
-ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && python3 /home/<your_user_here>/runescape/runespreader/clickhouse.py"
+ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && archiver"
 Restart=on-failure
 RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 ```
 
-Spreadfinder - The simple opportunity finder bot
+TradeSeeker - The simple opportunity finder bot
 ```
 [Unit]
 Description= OSRS GE Market Maker
 [Service]
 User=charles
-ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && python3 /home/<your_user_here>/runescape/runespreader/spreadfinder.py"
+ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && trade_seeker"
 Restart=on-failure
 RestartSec=5s
 [Install]
@@ -64,7 +64,7 @@ Kafka Publisher - Distribute aggregated data to downstream consumers
 Description= OSRS Publisher
 [Service]
 User=<your_user_here>
-ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && python3 /home/<your_user_here>/runescape/runespreader/publisher.py"
+ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && publisher"
 Restart=on-failure
 RestartSec=5s
 [Install]
@@ -77,7 +77,7 @@ Description= OSRS Kafka Consumer
 [Service]
 User=<your_user_here>
 WorkingDirectory=/home/<your_user_here>/tmp # There is a directory emitted from faust while running so you need to specify a location
-ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && python3 /home/<your_user_here>/runescape/runespreader/consumer.py worker -l info"
+ExecStart= /bin/bash -c "source /home/<your_user_here>/.venvs/runespreader/bin/activate && consumer worker -l info"
 Restart=on-failure
 RestartSec=5s
 [Install]

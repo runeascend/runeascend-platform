@@ -11,7 +11,7 @@ from clickhouse_driver import Client
 from kafka import KafkaProducer
 from twisted.internet import reactor, task
 
-from runespreader.spreader import Runespreader
+from runeascend.runespreader.spreader import Runespreader
 
 config = yaml.load(
     open(f"{os.path.expanduser('~')}/.config/runespreader"),

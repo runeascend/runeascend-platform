@@ -1,9 +1,9 @@
 [tool.poetry]
-name = "runespreader"
+name = "runeascend"
 version = "0.3.0"
-description = ""
+description = "Runescape Trading Platform"
 authors = ["Charles Warren <ciwarren@mtu.edu>"]
-include = ["runespreader", "tests"]
+include = ["runeascend", "tests"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -19,8 +19,17 @@ requests = "^2.32.3"
 faust-streaming = "^0.11.1"
 
 [tool.poetry.scripts]
-spreader = "runespreader.spreaderfinder:main"
-publisher = "runespreader.publisher:main"
+# RuneServant
+trade_seeker = "runeascend.runeservant.seeker:main"
+discord_bot = "runeascend.runeservant.bot:main"
+
+# RuneSpreader 
+publisher = "runeascend.runespreader.publisher:main"
+archiver = "runeascend.runespreader.archiver:main"
+
+# RuneVault
+consumer = "runeascend.runevault.consumer:main"
+
 [tool.poetry.group.dev.dependencies]
 deptry = "^0.16.1"
 black = "^24.4.2"
