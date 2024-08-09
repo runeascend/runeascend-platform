@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Describes intent",
+    "type": "object",
+    "properties": {
+      "symbol": {
+        "type": "string"
+      },
+      "trader_id": {
+        "type": "integer"
+      },
+      "price": {
+        "type": "number"
+      },
+      "quantity": {
+        "type": "integer"
+      },
+      "side": {
+        "type": "string"
+      },
+      "entry_order_id": {
+        "type": ["string", "null"]
+      },
+      "time": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "order_id": {
+        "type": "string"
+      }
+    },
+    "required": ["symbol", "trader_id", "price", "quantity", "side", "time", "order_id"]
+  }
