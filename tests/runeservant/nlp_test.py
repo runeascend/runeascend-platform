@@ -4,7 +4,7 @@ import re
 import pytest
 
 from runeascend.runeservant.bot import parse_intent
-from tests.runespreader_mock import Mockspreader
+from tests.runespreader.runespreader_mock import Mockspreader
 
 pytest_plugins = ("pytest_asyncio",)
 m = Mockspreader()
