@@ -1,14 +1,13 @@
-import os
 import time
 import urllib.parse
 from datetime import datetime
 
 import pandas as pd
 import requests
-import yaml
-from clickhouse_driver import Client
 from requests import get
 
+from runeascend.common.clickhouse import get_clickhouse_client
+from runeascend.common.config import get_config
 from runeascend.runespreader.spreader import Runespreader
 
 
@@ -30,10 +29,7 @@ def refresh_vol_list(config):
 
 def main():
     ip = get("https://api.ipify.org").content.decode("utf8")
-    config = yaml.load(
-        open(f"{os.path.expanduser('~')}/.config/runespreader"),
-        Loader=yaml.Loader,
-    )
+    config = get_config()
     profit_threshold = config.get("POTENTIAL_PROFIT")
     discord_url = config.get("BOT_WEBHOOK")
 
@@ -43,7 +39,7 @@ def main():
         r = Runespreader()
         if timestamp - time.time() > 86400:
             timestamp, symbols_to_track = refresh_vol_list()
-        client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+        client = get_clickhouse_client()
         rs_sells = client.execute(
             f"select low, lowTime, name, id from rs_sells where lowTime >= now() - interval 1 hour"
         )

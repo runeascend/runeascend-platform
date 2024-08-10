@@ -1,21 +1,17 @@
-import os
 import time
 
 import pandas as pd
-import yaml
-from clickhouse_driver import Client
 
+from runeascend.common.clickhouse import get_clickhouse_client
+from runeascend.common.config import get_config
 from runeascend.runespreader.spreader import Runespreader
 
 
 def main():
-    config = yaml.load(
-        open(f"{os.path.expanduser('~')}/.config/runespreader"),
-        Loader=yaml.Loader,
-    )
+    config = get_config()
     while True:
         r = Runespreader()
-        client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+        client = get_clickhouse_client()
         data = r.get_latest_data_for_all_symbols()
         df = pd.DataFrame(
             data, columns=["high", "highTime", "low", "lowTime", "name", "id"]
