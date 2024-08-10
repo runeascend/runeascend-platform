@@ -6,17 +6,12 @@ from datetime import datetime, timedelta
 import pandas as pd
 import requests
 import structlog
-import yaml
-from clickhouse_driver import Client
 from kafka import KafkaProducer
 from twisted.internet import reactor, task
 
+from runeascend.common.clickhouse import get_clickhouse_client
+from runeascend.common.config import get_config
 from runeascend.runespreader.spreader import Runespreader
-
-config = yaml.load(
-    open(f"{os.path.expanduser('~')}/.config/runespreader"),
-    Loader=yaml.Loader,
-)
 
 
 def refresh_vol_list(config):
@@ -37,12 +32,10 @@ class publisher:
         self.topic = topic
         self.base_iterations = base_iterations
         self.iterations = 0
-        self.client = Client(
-            host="localhost", password=config.get("CH_PASSWORD")
-        )
+        self.client = get_clickhouse_client()
         self.r = Runespreader()
         self.producer = KafkaProducer(
-            bootstrap_servers="10.0.0.20:9092",
+            bootstrap_servers=os.getenv("KAFKA_BROKER", "localhost:9092"),
             value_serializer=lambda v: json.dumps(v).encode("utf-8"),
         )
         structlog.configure(
@@ -460,10 +453,7 @@ class sweep_publisher(publisher):
 
 
 def main():
-    config = yaml.load(
-        open(f"{os.path.expanduser('~')}/.config/runespreader"),
-        Loader=yaml.Loader,
-    )
+    config = get_config()
 
     r_pub = ref_data_publisher(config)
     m_pub = mkt_data_publisher(config)

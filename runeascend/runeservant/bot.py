@@ -1,9 +1,8 @@
-import os
 import re
 
 import discord
-import yaml
 
+from runeascend.common.config import get_config
 from runeascend.runespreader.spreader import Runespreader
 
 
@@ -76,10 +75,7 @@ def main():
             return
         return
 
-    config = yaml.load(
-        open(f"{os.path.expanduser('~')}/.config/runespreader"),
-        Loader=yaml.Loader,
-    )
+    config = get_config()
     bot_token = config.get("BOT_TOKEN")
 
     client.run(bot_token)

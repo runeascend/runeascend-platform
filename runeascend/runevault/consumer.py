@@ -2,9 +2,8 @@ import datetime
 import os
 
 import faust
-import yaml
-from clickhouse_driver import Client
 
+from runeascend.common.clickhouse import get_clickhouse_client
 from runeascend.runevault.models import (
     hf_opp_message,
     mf_opp_message,
@@ -13,13 +12,10 @@ from runeascend.runevault.models import (
 )
 
 app = faust.App(
-    "runewriter", broker="kafka://localhost:9092", topic_partitions=4
+    "runewriter",
+    broker=f"kafka://{os.getenv('KAFKA_BROKER','localhost:9092')}",
+    topic_partitions=4,
 )
-
-config = yaml.load(
-    open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
-)
-
 
 osrs_hf_opp = app.topic("osrs-hf-opp", value_type=hf_opp_message)
 osrs_mf_opp = app.topic("osrs-mf-opp", value_type=mf_opp_message)
@@ -29,7 +25,7 @@ osrs_sweeps = app.topic("osrs-sweeps", value_type=sweep_message)
 
 @app.agent(osrs_hf_opp)
 async def hf_opp_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for records in stream.take(100, within=1):
         formatted_records = []
         for record in records:
@@ -57,7 +53,7 @@ async def hf_opp_handler(stream):
 
 @app.agent(osrs_mf_opp)
 async def mf_opp_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for records in stream.take(1000, within=1):
         formatted_records = []
         for record in records:
@@ -79,7 +75,7 @@ async def mf_opp_handler(stream):
 
 @app.agent(osrs_mkt_data)
 async def mkt_data_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for records in stream.take(1000, within=1):
         formatted_records = []
         for record in records:
@@ -101,7 +97,7 @@ async def mkt_data_handler(stream):
 
 @app.agent(osrs_sweeps)
 async def sweeps_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for record in stream:
         try:
             record.validate()

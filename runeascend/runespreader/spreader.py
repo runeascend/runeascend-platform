@@ -1,10 +1,10 @@
-import os
 from datetime import timedelta
 
 import pandas as pd
 import requests
-import yaml
-from clickhouse_driver import Client
+
+from runeascend.common.clickhouse import get_clickhouse_client
+from runeascend.common.config import get_config
 
 
 class Runespreader:
@@ -71,11 +71,8 @@ class Runespreader:
         returns a tuple with two df, first one is sells
         second one is buys
         """
-        config = yaml.load(
-            open(f"{os.path.expanduser('~')}/.config/runespreader"),
-            Loader=yaml.Loader,
-        )
-        client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+        config = get_config()
+        client = get_clickhouse_client()
         rs_sells = client.execute(
             f"select low, lowTime, name, id from rs_sells where lowTime >= now() - interval {interval} and name = '{name}'"
         )

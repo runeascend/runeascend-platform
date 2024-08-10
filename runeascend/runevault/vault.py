@@ -2,9 +2,8 @@ import datetime
 import os
 
 import faust
-import yaml
-from clickhouse_driver import Client
 
+from runeascend.common.clickhouse import get_clickhouse_client
 from runeascend.runevault.models import (
     cancel_message,
     fill_message,
@@ -13,12 +12,11 @@ from runeascend.runevault.models import (
 )
 
 app = faust.App(
-    "runevault", broker="kafka://localhost:9092", topic_partitions=4
+    "runevault",
+    broker=f"kafka://{os.getenv('KAFKA_BROKER','localhost:9092')}",
+    topic_partitions=4,
 )
 
-config = yaml.load(
-    open(f"{os.path.expanduser('~')}/.config/runespreader"), Loader=yaml.Loader
-)
 
 osrs_savant_orders = app.topic("osrs-savant-orders", value_type=order_message)
 osrs_savant_fills = app.topic("osrs-savant-fills", value_type=fill_message)
@@ -33,7 +31,7 @@ savant_order_table = app.Table(
 
 @app.agent(osrs_savant_orders)
 async def order_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for record in stream:
         try:
             record.validate()
@@ -68,7 +66,7 @@ async def order_handler(stream):
 
 @app.agent(osrs_savant_fills)
 async def fill_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for record in stream:
         try:
             record.validate()
@@ -112,7 +110,7 @@ async def fill_handler(stream):
 
 @app.agent(osrs_savant_cancels)
 async def cancel_handler(stream):
-    client = Client(host="localhost", password=config.get("CH_PASSWORD"))
+    client = get_clickhouse_client()
     async for record in stream:
         try:
             record.validate()
