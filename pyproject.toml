@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "runeascend"
-version = "1.0.0"
+version = "1.0.1"
 description = "Runescape Trading Platform"
 authors = ["Charles Warren <ciwarren@mtu.edu>"]
 include = ["runeascend", "tests"]
