@@ -1,0 +1,7 @@
+/.venv
+/tests
+/build
+/.github
+/htmlcov
+/migrations
+/schemas
