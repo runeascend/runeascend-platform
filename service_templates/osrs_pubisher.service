@@ -1,0 +1,9 @@
+[Unit]
+Description= OSRS Publisher
+[Service]
+User=charles
+ExecStart= /bin/bash -c "export KAFKA_BROKER="10.0.0.20:9092" && source /home/charles/.venvs/runespreader/bin/activate && publisher"
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=multi-user.target                                 

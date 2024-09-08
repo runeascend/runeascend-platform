@@ -1,0 +1,10 @@
+[Unit]
+Description= OSRS GE Ripper
+
+[Service]
+User=charles
+ExecStart= /bin/bash -c "source /home/charles/.venvs/runespreader/bin/activate && archiver"
+Restart=on-failure
+RestartSec=5s
+[Install]
+WantedBy=multi-user.target
