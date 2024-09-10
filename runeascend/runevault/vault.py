@@ -141,3 +141,11 @@ async def cancel_handler(stream):
 
 
 # TODO: Implement app views for querying the data
+
+
+def main():
+    app.main()
+
+
+if __name__ == "__main__":
+    main()

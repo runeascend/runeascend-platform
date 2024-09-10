@@ -4,13 +4,13 @@ import os
 from datetime import datetime, timedelta
 
 import pandas as pd
-import requests
 import structlog
 from kafka import KafkaProducer
 from twisted.internet import reactor, task
 
 from runeascend.common.clickhouse import get_clickhouse_client
 from runeascend.common.config import get_config
+from runeascend.common.http import get_session
 from runeascend.runespreader.spreader import Runespreader
 
 
@@ -90,18 +90,21 @@ class mkt_data_publisher(publisher):
 
     def gather_data(self):
         data_array = []
+        s = get_session()
         latest_data_dict = (
-            requests.get(
+            s.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/latest/",
                 headers=self.r.custom_headers,
+                timeout=1,
             )
             .json()
             .get("data")
         )
         volume_data_dict = (
-            requests.get(
+            s.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/5m/",
                 headers=self.r.custom_headers,
+                timeout=1,
             )
             .json()
             .get("data")

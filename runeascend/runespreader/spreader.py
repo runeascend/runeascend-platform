@@ -1,10 +1,10 @@
 from datetime import timedelta
 
 import pandas as pd
-import requests
 
 from runeascend.common.clickhouse import get_clickhouse_client
 from runeascend.common.config import get_config
+from runeascend.common.http import get_session
 
 
 class Runespreader:
@@ -12,9 +12,11 @@ class Runespreader:
         self.custom_headers = {
             "User-Agent": "Runespreader Python-3.11, Discord @avg_white_male"
         }
-        raw_list = requests.get(
+        s = get_session()
+        raw_list = s.get(
             "https://prices.runescape.wiki/api/v1/osrs/mapping",
             headers=self.custom_headers,
+            timeout=1,
         ).json()
         self.id_to_name_mapping = {}
         self.name_to_id_mapping = {}
@@ -34,18 +36,21 @@ class Runespreader:
 
     def get_latest_data_for_id(self, uuid: str | int) -> dict:
         uuid = str(uuid)
+        s = get_session()
         data_dict = (
-            requests.get(
+            s.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/latest/?id={uuid}",
                 headers=self.custom_headers,
+                timeout=1,
             )
             .json()
             .get("data")
             .get(uuid)
         )
-        resp_json = requests.get(
+        resp_json = s.get(
             "https://prices.runescape.wiki/api/v1/osrs/volumes",
             headers=self.custom_headers,
+            timeout=1,
         ).json()
         data_dict["vol"] = resp_json.get("data").get(uuid)
         data_dict["vol_ts"] = resp_json.get("timestamp")
@@ -57,9 +62,11 @@ class Runespreader:
         and a list in a key called data. The keys of
         said list are the ids.
         """
-        resp_json = requests.get(
+        s = get_session()
+        resp_json = s.get(
             "https://prices.runescape.wiki/api/v1/osrs/volumes",
             headers=self.custom_headers,
+            timeout=1,
         ).json()
         return resp_json
 
@@ -92,10 +99,12 @@ class Runespreader:
         returns a list of dicts containing entry values of highTime, high
         lowTime, low, name, and id
         """
+        s = get_session()
         data_dict = (
-            requests.get(
+            s.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/latest/",
                 headers=self.custom_headers,
+                timeout=1,
             )
             .json()
             .get("data")
@@ -114,10 +123,12 @@ class Runespreader:
         return data_array
 
     def get_5_minute_data(self) -> list:
+        s = get_session()
         data_dict = (
-            requests.get(
+            s.get(
                 f"https://prices.runescape.wiki/api/v1/osrs/5m",
                 headers=self.custom_headers,
+                timeout=1,
             )
             .json()
             .get("data")
