@@ -2,7 +2,7 @@ name: PR Check
 on: [pull_request]
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: 
     container:
       image: python:3.11
     steps:
@@ -18,7 +18,7 @@ jobs:
       - name: pytest
         run: make test
       - name: upload test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: htmlcov/
