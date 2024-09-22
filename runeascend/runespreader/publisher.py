@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -12,6 +13,8 @@ from runeascend.common.clickhouse import get_clickhouse_client
 from runeascend.common.config import get_config
 from runeascend.common.http import get_session
 from runeascend.runespreader.spreader import Runespreader
+
+MESSAGE_MEMORY = defaultdict(dict)
 
 
 def refresh_vol_list(config):
@@ -27,9 +30,12 @@ def refresh_vol_list(config):
 
 
 class publisher:
-    def __init__(self, config, topic, base_iterations=60):
+    def __init__(
+        self, config, topic, base_iterations=60, message_memory=MESSAGE_MEMORY
+    ):
         self.config = config
         self.topic = topic
+        self.memory = message_memory[topic]
         self.base_iterations = base_iterations
         self.iterations = 0
         self.client = get_clickhouse_client()
@@ -257,8 +263,8 @@ class hf_opp_publisher(publisher):
         ).sort_values(["low_time"], ascending=False)
         for symbol in self.symbols_to_track:
             try:
-                last_sell = low_df[low_df["name"] == symbol].iloc[0]
-                last_buy = high_df[high_df["name"] == symbol].iloc[0]
+                last_sell = low_df[low_df["name"] == symbol].iloc[0].to_dict()
+                last_buy = high_df[high_df["name"] == symbol].iloc[0].to_dict()
             except:
                 continue
             now = pd.Timestamp(datetime.utcnow()).floor(freq="s")
@@ -266,6 +272,19 @@ class hf_opp_publisher(publisher):
                 "15 minutes"
             ) or last_buy["high_time"] < now - pd.Timedelta("15 minutes"):
                 continue
+
+            if (
+                (symbol_memory := self.memory.get(symbol))
+                and symbol_memory["last_sell"] == last_sell
+                and symbol_memory["last_buy"] == last_buy
+            ):
+                continue
+            else:
+                self.memory[symbol] = {
+                    "last_sell": last_sell,
+                    "last_buy": last_buy,
+                }
+                self.logger.info(f"High Frequency Opportunity on {symbol}")
             profit_per_item = (
                 last_buy["high"] - (last_buy["high"] * 0.01)
             ) - last_sell["low"]
@@ -433,16 +452,24 @@ class sweep_publisher(publisher):
         ).sort_values(["low_time"], ascending=False)
         for symbol in self.symbols_to_track:
             try:
-                sell_0 = low_df[low_df["name"] == symbol].iloc[0]
-                buy_0 = high_df[high_df["name"] == symbol].iloc[0]
-                sell_1 = low_df[low_df["name"] == symbol].iloc[1]
-                buy_1 = high_df[high_df["name"] == symbol].iloc[1]
+                sell_0 = low_df[low_df["name"] == symbol].iloc[0].to_dict()
+                buy_0 = high_df[high_df["name"] == symbol].iloc[0].to_dict()
+                sell_1 = low_df[low_df["name"] == symbol].iloc[1].to_dict()
+                buy_1 = high_df[high_df["name"] == symbol].iloc[1].to_dict()
             except:
                 continue
             now = pd.Timestamp(datetime.utcnow()).floor(freq="s")
             if sell_0["low_time"] < now - pd.Timedelta("1 minutes"):
                 continue
-
+            if (
+                (symbol_memory := self.memory.get(symbol))
+                and symbol_memory["last_sell"] == sell_0
+                and symbol_memory["last_buy"] == buy_0
+            ):
+                continue
+            else:
+                self.memory[symbol] = {"last_sell": sell_0, "last_buy": buy_0}
+                self.logger.info(f"Sweep on {symbol}")
             limit = self.r.name_to_limit.get(symbol)
             if (
                 sell_0["low"] < sell_1["low"]
@@ -455,26 +482,43 @@ class sweep_publisher(publisher):
                 self.publish(key, value)
 
 
+def error_callback(failure, publisher, interval):
+    if failure:
+        publisher.logger.error(failure)
+        publisher.logger.info(f"Restarting {publisher.topic} publisher")
+        publisher.start(interval)
+
+
 def main():
     config = get_config()
 
-    r_pub = ref_data_publisher(config)
-    m_pub = mkt_data_publisher(config)
-    mf_pub = mf_publisher(config)
     h_pub = hf_opp_publisher(config)
     s_pub = sweep_publisher(config)
+    m_pub = mkt_data_publisher(config)
+    mf_pub = mf_publisher(config)
+    r_pub = ref_data_publisher(config)
 
-    r = task.LoopingCall(r_pub.run)
-    m = task.LoopingCall(m_pub.run)
-    mf = task.LoopingCall(mf_pub.run)
     h = task.LoopingCall(h_pub.run)
     s = task.LoopingCall(s_pub.run)
+    m = task.LoopingCall(m_pub.run)
+    mf = task.LoopingCall(mf_pub.run)
+    r = task.LoopingCall(r_pub.run)
 
-    r.start(config.get("REF_DATA_INTERVAL"))
-    m.start(config.get("MKT_DATA_INTERVAL"))
-    mf.start(config.get("MF_OPP_INTERVAL"))
-    h.start(config.get("HF_OPP_INTERVAL"))
-    s.start(config.get("SWEEP_INTERVAL"))
+    h.start(config.get("HF_OPP_INTERVAL")).addErrback(
+        error_callback, h_pub, config.get("HF_OPP_INTERVAL")
+    )
+    s.start(config.get("SWEEP_INTERVAL")).addErrback(
+        error_callback, s_pub, config.get("SWEEP_INTERVAL")
+    )
+    m.start(config.get("MKT_DATA_INTERVAL")).addErrback(
+        error_callback, m_pub, config.get("MKT_DATA_INTERVAL")
+    )
+    mf.start(config.get("MF_OPP_INTERVAL")).addErrback(
+        error_callback, mf_pub, config.get("MF_OPP_INTERVAL")
+    )
+    r.start(config.get("REF_DATA_INTERVAL")).addErrback(
+        error_callback, r_pub, config.get("REF_DATA_INTERVAL")
+    )
 
     reactor.run()
 
