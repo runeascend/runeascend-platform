@@ -286,7 +286,7 @@ class hf_opp_publisher(publisher):
                 }
                 self.logger.info(f"High Frequency Opportunity on {symbol}")
             profit_per_item = (
-                last_buy["high"] - (last_buy["high"] * 0.01)
+                last_buy["high"] - (last_buy["high"] * 0.02)
             ) - last_sell["low"]
             limit = self.r.name_to_limit.get(symbol)
             if profit_per_item / last_sell["low"] > self.ROI_RATIO:
