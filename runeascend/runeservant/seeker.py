@@ -64,7 +64,7 @@ def main():
             ) or last_buy["high_time"] < now - pd.Timedelta("15 minutes"):
                 continue
             profit_per_item = (
-                last_buy["high"] - (last_buy["high"] * 0.01)
+                last_buy["high"] - (last_buy["high"] * 0.02)
             ) - last_sell["low"]
             limit = r.name_to_limit.get(symbol)
             potential_profit = profit_per_item * limit
