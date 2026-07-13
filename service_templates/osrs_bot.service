@@ -2,7 +2,7 @@
 Description= OSRS Bot
 [Service]
 User=charles
-ExecStart= /bin/bash -c "source /home/charles/.venvs/runespreader/bin/activate && discord_bot"
+ExecStart= /bin/bash -c "source /home/charles/runescape/.venv/bin/activate && discord_bot"
 Restart=on-failure
 RestartSec=5s
 [Install]

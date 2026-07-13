@@ -3,7 +3,7 @@ Description= OSRS GE Ripper
 
 [Service]
 User=charles
-ExecStart= /bin/bash -c "source /home/charles/.venvs/runespreader/bin/activate && trade_seeker"
+ExecStart= /bin/bash -c "source /home/charles/runescape/.venv/bin/activate && trade_seeker"
 Restart=on-failure
 RestartSec=5s
 [Install]

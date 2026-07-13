@@ -3,7 +3,7 @@ Description= OSRS Message Capture Service
 
 [Service]
 User=charles
-ExecStart= /bin/bash -c "cd /home/charles/app/consumer && export KAFKA_BROKER="10.0.0.20:9092" && source /home/charles/.venvs/runespreader/bin/activate && consumer worker -l info -p 6067"
+ExecStart= /bin/bash -c "cd /home/charles/app/consumer && export KAFKA_BROKER="10.0.0.20:9092" && source /home/charles/runescape/.venv/bin/activate && consumer worker -l info -p 6067"
 Restart=on-failure
 RestartSec=5s
 [Install]

@@ -2,7 +2,7 @@
 Description= OSRS Trade Keeper
 [Service]
 User=charles
-ExecStart= /bin/bash -c "cd /home/charles/app/vault && export KAFKA_BROKER="10.0.0.20:9092" && source /home/charles/.venvs/runespreader/bin/activate && vault worker -l info -p 6068"
+ExecStart= /bin/bash -c "cd /home/charles/app/vault && export KAFKA_BROKER="10.0.0.20:9092" && source /home/charles/runescape/.venv/bin/activate && vault worker -l info -p 6068"
 Restart=on-failure
 RestartSec=5s
 [Install]
