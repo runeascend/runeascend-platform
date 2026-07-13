@@ -11,7 +11,14 @@ dependencies = [
     "pyyaml>=6.0.1,<7.0.0",
     "discord>=2.3.2,<3.0.0",
     "twisted>=26.4.0,<27.0.0",
-    "kafka-python>=2.0.2,<3.0.0",
+    # aiokafka 0.14 (via faust-streaming) calls request.prepare() on
+    # kafka-python Request objects. That API was removed in kafka-python
+    # 2.0.3+; pin to 2.0.2 exactly until aiokafka/faust catches up.
+    "kafka-python==2.0.2",
+    # aiokafka 0.12+ shipped incompatible changes that break faust's
+    # protocol handling. Pin to 0.11 (matches what faust-streaming used
+    # to install transitively) until faust is updated.
+    "aiokafka>=0.11.0,<0.12.0",
     "structlog>=24.2.0,<25.0.0",
     "requests>=2.33.0,<3.0.0",
     "faust-streaming>=0.11.1,<0.12.0",
