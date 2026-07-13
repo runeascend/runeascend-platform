@@ -1,0 +1,13 @@
+[Unit]
+Description=Run redpanda-update-advertised-ip every 5 minutes
+
+[Timer]
+# Fire 1 min after boot, then every 5 min
+OnBootSec=1min
+OnUnitActiveSec=5min
+AccuracySec=15s
+Unit=redpanda-update-advertised-ip.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target

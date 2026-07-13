@@ -50,8 +50,17 @@ class publisher:
         self.logger = structlog.get_logger()
 
     def publish(self, key, message):
-        self.producer.send(
+        future = self.producer.send(
             topic=self.topic, key=str(key).encode("utf-8"), value=message
+        )
+        future.add_errback(
+            lambda exc, topic=self.topic, key=key: self.logger.error(
+                "kafka_send_failed",
+                topic=topic,
+                key=str(key),
+                error=str(exc),
+                error_type=type(exc).__name__,
+            )
         )
         self.logger.debug("published_message", message=message, key=key)
 
@@ -61,6 +70,21 @@ class publisher:
     def refresh(self):
         self.logger.info("Refreshing data, client TTL Expired")
         self.r = Runespreader()
+
+    def safe_run(self):
+        """Wrapper around run() that swallows and logs any exception so a
+        transient failure (e.g. network hiccup in gather_data) does not kill
+        the LoopingCall driving this publisher."""
+        try:
+            return self.run()
+        except Exception as exc:
+            self.logger.error(
+                "publisher_run_failed",
+                publisher=self.topic,
+                error=str(exc),
+                error_type=type(exc).__name__,
+                exc_info=True,
+            )
 
     def run(self):
         self.logger.info("Publisher running", publisher=self.topic)
@@ -482,11 +506,16 @@ class sweep_publisher(publisher):
                 self.publish(key, value)
 
 
-def error_callback(failure, publisher, interval):
-    if failure:
-        publisher.logger.error(failure)
-        publisher.logger.info(f"Restarting {publisher.topic} publisher")
-        publisher.start(interval)
+def error_callback(failure, loop, pub, interval):
+    """Last-resort errback: safe_run should have caught everything, but if
+    an exception escapes and stops the LoopingCall, restart it."""
+    pub.logger.error(
+        "looping_call_died",
+        publisher=pub.topic,
+        failure=str(failure),
+    )
+    pub.logger.info(f"Restarting {pub.topic} LoopingCall")
+    loop.start(interval).addErrback(error_callback, loop, pub, interval)
 
 
 def main():
@@ -498,26 +527,26 @@ def main():
     mf_pub = mf_publisher(config)
     r_pub = ref_data_publisher(config)
 
-    h = task.LoopingCall(h_pub.run)
-    s = task.LoopingCall(s_pub.run)
-    m = task.LoopingCall(m_pub.run)
-    mf = task.LoopingCall(mf_pub.run)
-    r = task.LoopingCall(r_pub.run)
+    h = task.LoopingCall(h_pub.safe_run)
+    s = task.LoopingCall(s_pub.safe_run)
+    m = task.LoopingCall(m_pub.safe_run)
+    mf = task.LoopingCall(mf_pub.safe_run)
+    r = task.LoopingCall(r_pub.safe_run)
 
     h.start(config.get("HF_OPP_INTERVAL")).addErrback(
-        error_callback, h_pub, config.get("HF_OPP_INTERVAL")
+        error_callback, h, h_pub, config.get("HF_OPP_INTERVAL")
     )
     s.start(config.get("SWEEP_INTERVAL")).addErrback(
-        error_callback, s_pub, config.get("SWEEP_INTERVAL")
+        error_callback, s, s_pub, config.get("SWEEP_INTERVAL")
     )
     m.start(config.get("MKT_DATA_INTERVAL")).addErrback(
-        error_callback, m_pub, config.get("MKT_DATA_INTERVAL")
+        error_callback, m, m_pub, config.get("MKT_DATA_INTERVAL")
     )
     mf.start(config.get("MF_OPP_INTERVAL")).addErrback(
-        error_callback, mf_pub, config.get("MF_OPP_INTERVAL")
+        error_callback, mf, mf_pub, config.get("MF_OPP_INTERVAL")
     )
     r.start(config.get("REF_DATA_INTERVAL")).addErrback(
-        error_callback, r_pub, config.get("REF_DATA_INTERVAL")
+        error_callback, r, r_pub, config.get("REF_DATA_INTERVAL")
     )
 
     reactor.run()

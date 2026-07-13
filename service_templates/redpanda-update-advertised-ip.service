@@ -1,0 +1,10 @@
+[Unit]
+Description=Update Redpanda advertised_kafka_api to match current WAN IP
+After=network-online.target redpanda.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/redpanda-update-advertised-ip.sh
+# Don't fail the timer if the WAN is briefly unreachable
+SuccessExitStatus=0 1
