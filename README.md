@@ -12,9 +12,29 @@ pip install runeascend-platform
 
 ### From Project
 
+This project uses [uv](https://docs.astral.sh/uv/) for dependency
+management and packaging.
+
 ```
+# one-time: install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# create + populate the project venv at ./.venv
 make create-dev
+# or, directly:
+uv sync --all-groups
+
+# activate it
+source .venv/bin/activate
 ```
+
+Common tasks (`makefile`):
+
+- `make format` / `make format-check` — black + isort via `uv run`
+- `make dep-check` — deptry via `uv run`
+- `make test` — pytest with coverage via `uv run`
+- `make update-dev` — refresh the lockfile to the latest resolvable versions
+- `make lock` — regenerate `uv.lock` after editing dependencies
 
 ## Running the applets
 

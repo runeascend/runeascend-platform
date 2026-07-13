@@ -1,17 +1,17 @@
 format:
-	poetry run black .
-	poetry run isort . 
+	uv run black .
+	uv run isort .
 format-check:
-	poetry run black --check .
-	poetry run isort --check .
+	uv run black --check .
+	uv run isort --check .
 dep-check:
-	poetry run deptry .
+	uv run deptry .
 create-dev:
-	python3.11 -m venv .venv
-	.venv/bin/pip install poetry==1.4.2
-	.venv/bin/python3 -m poetry install --with dev
-	echo "run source .venv/bin/activate"
+	uv sync --all-groups
+	@echo "run: source .venv/bin/activate"
 update-dev:
-	.venv/bin/python3 -m poetry update
+	uv sync --upgrade --all-groups
+lock:
+	uv lock
 test:
-	poetry run pytest --cov-report term --cov-report html --cov=./runespreader .
+	uv run pytest --cov-report term --cov-report html --cov=./runeascend .
