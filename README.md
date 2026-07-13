@@ -60,6 +60,53 @@ I recommend using redpanda console to interact with you environment, the instruc
 
 message schemas are updated in `schemas/` (except for osrs-ref-data)
 
+### Keeping `advertised_kafka_api` in sync with the WAN IP
+
+Redpanda's `advertised_kafka_api` in `/etc/redpanda/redpanda.yaml` must point at
+the current public/WAN IP (this is what the discord bot's graph-linking assumes,
+and what remote clients bootstrap to). On a residential/DHCP connection that IP
+can change without warning; when it does, all producers and consumers silently
+break because the broker keeps handing out a stale endpoint.
+
+`service_templates/redpanda-update-advertised-ip.sh` plus its accompanying
+`.service` / `.timer` units automate this. The timer fires 1 minute after boot
+and then every 5 minutes; the script:
+
+1. Resolves the current WAN IPv4 via a fallback chain of
+   `api.ipify.org` → `ifconfig.me` → `icanhazip.com`.
+2. Compares it to `advertised_kafka_api[0].address` in `redpanda.yaml`.
+3. If different: backs up the config (`redpanda.yaml.bak.<timestamp>`),
+   rewrites `advertised_kafka_api` and `advertised_rpc_api` via a YAML
+   round-trip, validates the result, restarts `redpanda.service`, and rolls
+   back on any restart failure.
+4. If the IP is unchanged, it's a no-op.
+
+Install:
+
+```bash
+sudo install -o root -g root -m 755 \
+  service_templates/redpanda-update-advertised-ip.sh \
+  /usr/local/sbin/redpanda-update-advertised-ip.sh
+
+sudo install -o root -g root -m 644 \
+  service_templates/redpanda-update-advertised-ip.service \
+  /etc/systemd/system/redpanda-update-advertised-ip.service
+
+sudo install -o root -g root -m 644 \
+  service_templates/redpanda-update-advertised-ip.timer \
+  /etc/systemd/system/redpanda-update-advertised-ip.timer
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now redpanda-update-advertised-ip.timer
+```
+
+Verify with:
+
+```bash
+systemctl list-timers redpanda-update-advertised-ip.timer
+journalctl -t redpanda-ip -n 20
+```
+
 ```
 osrs-fills: Successful execution {price, symbol_id, account_username, buy/sell, position_open_time, position_close_time}
 
